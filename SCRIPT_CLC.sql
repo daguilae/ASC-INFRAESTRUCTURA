@@ -4,19 +4,21 @@ create table if not exists LOGIN(
 	pk_id_login 					int(10) not null primary key auto_increment,
     usuario_login 					varchar(45),
     contraseña_login 				varchar(45),
-    estado_login					int(2),
-    fk_idempleado_login				int(9)
+    nombreCompleto_login			varchar(100),
+    estado_login					int(2)
 );
 -- ------------------------------------
 create table if not exists APLICACION(
 	pk_id_aplicacion				int(10) not null primary key auto_increment,
     nombre_aplicacion				varchar(50),
-    informe_aplicacion				varchar(50)
+    informe_aplicacion				varchar(50),
+    estado_aplicacion				int(2)
 );
 create table if not exists PERFIL(
 	pk_id_perfil					int(10) not null primary key auto_increment,
     nombre_perfil					int(10),
-    descripcion_perfil				varchar(50)
+    descripcion_perfil				varchar(50),
+    estado_perfil					int(2)
 );
 create table if not exists APLICACIONPERFIL(
 	pk_id_aplicacionperfil				int(10) not null primary key auto_increment,
@@ -39,11 +41,11 @@ create table if not exists APLICACIONUSUARIO(
 
 create table if not exists PERMISO(
 	pk_id_permiso				int(10) not null primary key auto_increment,
-    insertar_permiso		boolean,
-    modificar_permiso		boolean,
-    eliminar_permiso		boolean,
+    insertar_permiso			boolean,
+    modificar_permiso			boolean,
+    eliminar_permiso			boolean,
     consultar_permiso			boolean,
-    imprimir_permiso		boolean
+    imprimir_permiso			boolean
 );
 
 #------BITACORA-----------------------------------------
@@ -125,7 +127,7 @@ CREATE TABLE IF NOT EXISTS INVENTARIOCRM (
   fk_idproducto 					INT NOT NULL,
   PRIMARY KEY (pk_idinventario)
 );
-CREATE TABLE IF NOT EXISTS CORREO_CLIENTE (
+CREATE TABLE IF NOT EXISTS CORREO_CLIENTE (#Direccion fisica de una casa.
   pk_iddireccionCliente 			INT NOT NULL,
   numero				 			VARCHAR(45) NULL,
   calle				 				VARCHAR(45) NULL,
@@ -149,7 +151,7 @@ CREATE TABLE IF NOT EXISTS CORREO_CLIENTE (
   fk_idcliente 						INT NOT NULL,
   PRIMARY KEY (pk_iddireccionCliente)
 );
-CREATE TABLE IF NOT EXISTS CONTROL_EMPLEADO (
+CREATE TABLE IF NOT EXISTS CONTROL_EMPLEADO (-- -------------arreglar
   pk_idControlEmpleado 				INT NOT NULL,
   Horas_Efectivas_De_Trabajo 		VARCHAR(45) NULL,
   Horas_Extras 						VARCHAR(45) NULL,
@@ -172,13 +174,15 @@ create table if not exists CONTROLCALIDAD(
   fk_idordenproduccion_controlcalidad 		int not null,
   fk_idinventario_controlcalidad 			int not null, #porque inventario?
   fk_idresponsable_controlcalidad 			int(10) not null,
-  resultado_controlcalidad					varchar(45)
+  resultado_controlcalidad					varchar(45),
+  estado_controlcalidad						int(2)
 );
 create table if not exists CONTROLPRODUCTO (
   pk_id_controlproducto 					INT(10) NOT NULL primary key auto_increment,
   fk_idordenproduccion_controlproducto 		INT(10) NULL,
   fk_idestadoproduccion_controlproducto		INT(10) NULL,
-  resultado_controlproducto					varchar(45)
+  resultado_controlproducto					varchar(45),
+  estado_controlproducto					int(2)
 );
 create table if not exists ESTADOPRODUCCION(
   pk_id_estadoproduccion 					INT(10) NOT NULL primary key auto_increment,
@@ -189,14 +193,15 @@ create table if not exists HORAEMPLEADO (
   pk_id_horaempleado						INT(10) NOT NULL primary key auto_increment,
   fk_idempleado_horaempleado				INT(10) NULL,
   tiempo_horaempleado						INT NULL,
-  fk_idordenproduccion_horaempleado		INT NULL#porque se necesita orden de produccion?
+  fk_idordenproduccion_horaempleado			INT NULL#porque se necesita orden de produccion?
 );
 create table if not exists INVENTARIOMRP(
   pk_id_inventario 							INT(10) NOT NULL primary key auto_increment,
   fk_idmateriaprimainsumo_inventario		INT NULL,
   fk_idtipoinventario_inventario 			INT NULL,
   fecha_inventario							DATE NULL,
-  cantidad_inventario						INT NULL
+  cantidad_inventario						INT NULL,
+  estado_inventario							int(2)
 );
 create table if not exists MATERIAPRIMAINSUMO (
   pk_id_materiaprimainsumo 					INT(10) NOT NULL primary key auto_increment,
@@ -224,7 +229,8 @@ create table if not exists PRODUCTODETALLE (
   pk_id_productodetalle 						INT(10) NOT NULL primary key auto_increment,
   fk_idtipoproductoencabezado_productodetalle 	INT NULL,
   fk_idmateriaprimainsumo_productodetalle 		INT NULL,
-  cantidad_productodetalle 						INT NULL
+  cantidad_productodetalle 						INT NULL,
+  estado_productodetalle						int(2)
 );
 create table if not exists TIPOINVENTARIO (
   pk_id_tipoinventario 						INT(10) NOT NULL primary key auto_increment,
@@ -235,7 +241,8 @@ create table if not exists TIPOPRODUCTOENCABEZADO (
   pk_id_tipoproductoencabezado	 			INT(10) NOT NULL primary key auto_increment,
   nombre_tipoproductoencabezado 			VARCHAR(45) NULL,
   descripcion_tipoproductoencabezado 		VARCHAR(45) NULL,
-  precio_tipoproductoencabezado 			DOUBLE NULL
+  precio_tipoproductoencabezado 			DOUBLE NULL,
+  estado_tipoproductoencabezado				int(2)
   );
 #-------FRM---------------------------------------------  
 CREATE TABLE BANCO(
@@ -447,15 +454,7 @@ create table ENCARGADO_BODEGA(
     primary key(pk_id_encargado_bodega),
     key(pk_id_encargado_bodega)
 );
-#create table EMPLEADO(
-#   pk_id_empledo 							int(10)not null auto_increment,
-#    nombre 									varchar(30)not null,
-#    apellido 								varchar(30)not null,
-#    nit 									varchar(30)not null,
-#    estado 									int(1)not null,
-#    primary key(pk_id_empledo),
-#    key(pk_id_empledo)
-#);
+
 create table BODEGA(
 	pk_id_bodega 							int(10)not null auto_increment,
     fk_id_municipio 						int(10)not null,
@@ -555,251 +554,255 @@ create table MARCA (
 	key(pk_id_marca)
 );
 create table SUCURSAL(
-  pk_id_sucursal 						int(10)not null auto_increment,
-  fk_id_municipio 						int(10)not null,
-  nombre 								varchar(45)not null,
-  direccion 							varchar(45)not null,
-  telefono 								int(8)not null,
-  descripcion 							varchar(45)not null,
-  estado 								int(1)not null,
+  pk_id_sucursal 								int(10)not null auto_increment,
+  fk_id_municipio 								int(10)not null,
+  nombre 										varchar(45)not null,
+  direccion 									varchar(45)not null,
+  telefono 										int(8)not null,
+  descripcion 									varchar(45)not null,
+  estado 										int(1)not null,
   primary key(pk_id_sucursal),
   key(pk_id_sucursal) 
 );
 create table ENVIO_PRODUCTO(
-  pk_id_envio_producto 					int(10)not null auto_increment,
-  fk_id_ruta 							int(10)not null,
-  fk_id_producto 						int (10) not null, 
-  fk_id_empleado 						int (10) not null,
-  fk_id_vehiculo 						int (10) not null,
-  fec_envio 							datetime not null,
-  fec_recibido 							datetime not null,
-  descripcion 							varchar(45)not null,
+  pk_id_envio_producto 							int(10)not null auto_increment,
+  fk_id_ruta 									int(10)not null,
+  fk_id_producto 								int (10) not null, 
+  fk_id_empleado 								int (10) not null,
+  fk_id_vehiculo 								int (10) not null,
+  fec_envio 									datetime not null,
+  fec_recibido 									datetime not null,
+  descripcion 									varchar(45)not null,
   primary key(pk_id_envio_producto),
   key(pk_id_envio_producto) 
 );
 create table RUTA(
-	pk_id_ruta 							int(10)not null auto_increment,
-    origen 								int(10) not null,
-    destino 							int(10)not null,
-    descripcion 						varchar(45)not null,
-    estado 								int(1)not null,
+	pk_id_ruta 									int(10)not null auto_increment,
+    origen 										int(10) not null,
+    destino 									int(10)not null,
+    descripcion 								varchar(45)not null,
+    estado 										int(1)not null,
     primary key(pk_id_ruta),
     key(pk_id_ruta)
 );
 create table DEVOLUCION_DETALLE(
-	fk_id_encabezado_devolucion 		int(10)not null,
-	cod_linea 							int(10)not null,
-    fk_id_producto 						int(10)not null,
-    fk_id_estado_producto 				int(10)not null,
-    cantidad 							int(10)not null,
-    iva_por_cobrar 						double(8,2)not null,/*ESTO LO CALCULA FINANZAS*/
-    precio_unitario 					double(8,2)not null,
-    subtotal 							double(12,2)not null,
-    estado 								int(1)not null,
+	fk_id_encabezado_devolucion 				int(10)not null,
+	cod_linea 									int(10)not null,
+    fk_id_producto 								int(10)not null,
+    fk_id_estado_producto 						int(10)not null,
+    cantidad 									int(10)not null,
+    iva_por_cobrar 								double(8,2)not null,/*ESTO LO CALCULA FINANZAS*/
+    precio_unitario 							double(8,2)not null,
+    subtotal 									double(12,2)not null,
+    estado 										int(1)not null,
     primary key(fk_id_encabezado_devolucion,cod_linea),
     key(fk_id_encabezado_devolucion,cod_linea)
 );
 #-------HRM--------------------------------------------- 
 CREATE TABLE IF NOT EXISTS GENERO (
-  pk_id_genero 							INT NOT NULL,
-  nombre_genero 						VARCHAR(45) NULL,
+  pk_id_genero 									INT NOT NULL,
+  nombre_genero 								VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_genero)
   );
 CREATE TABLE IF NOT EXISTS ESTADO_CIVIL (
-  pk_id_estado_civil 					INT NOT NULL,
-  nombre_estado_civil 					VARCHAR(45) NULL,
+  pk_id_estado_civil 							INT NOT NULL,
+  nombre_estado_civil 							VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_estado_civil)
 );  
 CREATE TABLE IF NOT EXISTS LICENCIA_CONDUCCION (
-  pk_id_licencia_conduccion 			INT NOT NULL,
-  tipo_licencia_conduccion 				VARCHAR(45) NULL,
+  pk_id_licencia_conduccion 					INT NOT NULL,
+  tipo_licencia_conduccion 						VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_licencia_conduccion)
 );
 CREATE TABLE IF NOT EXISTS TIPO_CONTRATO (
-  pk_id_tipo_contrato 					INT NOT NULL,
-  nombre_tipo_contrato 					VARCHAR(45) NULL,
+  pk_id_tipo_contrato 							INT NOT NULL,
+  nombre_tipo_contrato 							VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_tipo_contrato)
 );
 CREATE TABLE IF NOT EXISTS CONTRATO (
-  pk_id_contrato 						INT NOT NULL,
-  nombre_contrato 						VARCHAR(45) NULL,
-  fecha_suscripcion_contrato 			VARCHAR(10) NULL,
-  fk_id_tipo_contrato 					INT NULL,
+  pk_id_contrato 								INT NOT NULL,
+  nombre_contrato 								VARCHAR(45) NULL,
+  fecha_suscripcion_contrato 					VARCHAR(10) NULL,
+  fk_id_tipo_contrato 							INT NULL,
   PRIMARY KEY (pk_id_contrato)
 );
 CREATE TABLE IF NOT EXISTS HORARIO (
-  pk_id_horario 						INT NOT NULL,
-  nombre_horario 						VARCHAR(45) NULL,
-  descripcion_horario 					VARCHAR(45) NULL,
+  pk_id_horario 								INT NOT NULL,
+  nombre_horario 								VARCHAR(45) NULL,
+  descripcion_horario 							VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_horario)
 );
 CREATE TABLE IF NOT EXISTS PUESTO (
-  pk_id_puesto 							INT NOT NULL,
-  nombre_puesto 						VARCHAR(45) NULL,
-  salario_puesto 						DOUBLE NULL,
-  fk_id_horario_puesto 					INT NULL,
+  pk_id_puesto 									INT NOT NULL,
+  nombre_puesto 								VARCHAR(45) NULL,
+  salario_puesto 								DOUBLE NULL,
+  fk_id_horario_puesto 							INT NULL,
   PRIMARY KEY (pk_id_puesto)
 );
 CREATE TABLE IF NOT EXISTS DEPARTAMENTO_EMPRESARIAL (
-  pk_id__departamento_empresarial 		INT NOT NULL,
-  nombre_departamento_empresarial 		VARCHAR(150) NULL,
+  pk_id__departamento_empresarial 				INT NOT NULL,
+  nombre_departamento_empresarial 				VARCHAR(150) NULL,
   PRIMARY KEY (pk_id__departamento_empresarial)
 );
 CREATE TABLE IF NOT EXISTS EMPLEADO (
-  pk_id_empleado 						INT NOT NULL,
-  nombre1_empleado 						VARCHAR(45) NULL,
-  nombre2_empleado 						VARCHAR(45) NULL,
-  apellido1_empleado 					VARCHAR(45) NULL,
-  apellido2_empleado 					VARCHAR(45) NULL,
-  fecha_nacimiento_empleado 			VARCHAR(10) NULL,
-  dpi_empleado 							INT NULL,
-  fk_id_genero_empleado 				INT NULL,
-  fk_id_estado_civil_empleado 			INT NULL,
-  email_empleado 						VARCHAR(125) NULL,
-  telefono_empleado 					INT NULL,
-  departamento_empleado 				VARCHAR(100) NULL,
-  direccion_zona_empleado 				VARCHAR(7) NULL,
-  direccion_municipio_empleado 			VARCHAR(100) NULL,
-  direccion_residencia_empleado 		VARCHAR(45) NULL,
-  fk_id_licencia_conducir_empleado 		INT NULL,
-  fk_id_contrato_empleado 				INT NULL,
-  fk_id_puesto_empleado 				INT NULL,
-  cuenta_bancaria_empleado 				INT NULL,
-  fk_id_departamento_empresarial_empleado INT NULL,
-  estado_empleado 						INT NULL,
+  pk_id_empleado 								INT NOT NULL,
+  nombre1_empleado 								VARCHAR(45) NULL,
+  nombre2_empleado 								VARCHAR(45) NULL,
+  apellido1_empleado 							VARCHAR(45) NULL,
+  apellido2_empleado 							VARCHAR(45) NULL,
+  fecha_nacimiento_empleado 					VARCHAR(10) NULL,
+  dpi_empleado 									INT NULL,
+  fk_id_genero_empleado 						INT NULL,
+  fk_id_estado_civil_empleado 					INT NULL,
+  email_empleado 								VARCHAR(125) NULL,
+  telefono_empleado 							INT NULL,
+  numero_iggs_empleado							INT NULL,
+  fk_id_licencia_conducir_empleado 				INT NULL,
+  fk_id_contrato_empleado 						INT NULL,
+  fk_id_puesto_empleado 						INT NULL,
+  cuenta_bancaria_empleado 						INT NULL,
+  fk_id_departamento_empresarial_empleado 		INT NULL,
+  estado_empleado 								INT NULL,
   PRIMARY KEY (pk_id_empleado)
 );
 CREATE TABLE IF NOT EXISTS CURSO (
-  pk_id_curso INT NOT NULL,
-  nombre_curso VARCHAR(45) NULL,
-  capacitador_curso VARCHAR(45) NULL,
+  pk_id_curso 									INT NOT NULL,
+  nombre_curso 									VARCHAR(45) NULL,
+  capacitador_curso 							VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_curso)
   );
 CREATE TABLE IF NOT EXISTS ENCABEZADO_CAPACITACION (
-  pk_id_encabezado_capacitacion INT NOT NULL,
-  nombre_encabezado_capacitacion VARCHAR(45) NULL,
-  fecha_inicio_encabezado_capacitacion VARCHAR(10) NULL,
-  fecha_fin_encabezado_capacitacion VARCHAR(10) NULL,
-  fk_id_curso_encabezado_capacitacion INT NULL,
+  pk_id_encabezado_capacitacion 				INT NOT NULL,
+  nombre_encabezado_capacitacion 				VARCHAR(45) NULL,
+  fecha_inicio_encabezado_capacitacion 			VARCHAR(10) NULL,
+  fecha_fin_encabezado_capacitacion 			VARCHAR(10) NULL,
+  fk_id_curso_encabezado_capacitacion 			INT NULL,
   PRIMARY KEY (pk_id_encabezado_capacitacion)
 );
 CREATE TABLE IF NOT EXISTS TIPO_COMPETENCIA (
-  pk_id_competencia INT NOT NULL,
-  nombre_competencia VARCHAR(150) NULL,
+  pk_id_competencia 							INT NOT NULL,
+  nombre_competencia 							VARCHAR(150) NULL,
   PRIMARY KEY (pk_id_competencia)
 );
 CREATE TABLE IF NOT EXISTS COMPETENCIA_DESARROLLO (
-  pk_id_encabezado_desarrollo INT NOT NULL,
-  fk_id_empleado_encabezado_desarrollo INT NULL,
-  fecha_inicio_encabezado_desarrollo VARCHAR(10) NULL,
-  fecha_fin_encabezado_desarrollo VARCHAR(10) NULL,
-  fk_id_competencia_encabezado_desarrollo INT NULL,
-  resultado_competencia_encabezado_desarrollo INT NULL,
+  pk_id_encabezado_desarrollo 					INT NOT NULL,
+  fk_id_empleado_encabezado_desarrollo 			INT NULL,
+  fecha_inicio_encabezado_desarrollo 			VARCHAR(10) NULL,
+  fecha_fin_encabezado_desarrollo 				VARCHAR(10) NULL,
+  fk_id_competencia_encabezado_desarrollo 		INT NULL,
+  resultado_competencia_encabezado_desarrollo 	INT NULL,
   PRIMARY KEY (pk_id_encabezado_desarrollo)
 );
 CREATE TABLE IF NOT EXISTS FORMACION_ACADEMICA (
-  pk_id_formacion_academica INT NOT NULL,
-  nombre_formacion_academica VARCHAR(50) NULL,
+  pk_id_formacion_academica 					INT NOT NULL,
+  nombre_formacion_academica 					VARCHAR(50) NULL,
   PRIMARY KEY (pk_id_formacion_academica)
 );
 CREATE TABLE IF NOT EXISTS TIPO_ENTREVISTA (
-  pk_id_tipo_entrevista INT NOT NULL,
-  nombre_tipo_entrevista VARCHAR(45) NULL,
+  pk_id_tipo_entrevista 						INT NOT NULL,
+  nombre_tipo_entrevista 						VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_tipo_entrevista)
 );
 CREATE TABLE IF NOT EXISTS RECLUTAMIENTO (
-  pk_id_reclutamiento INT NOT NULL,
-  fk_id_empleado_reclutamiento INT NULL,
-  fk_id_formacion_academica_reclutamiento INT NULL,
-  nombre1_reclutamiento VARCHAR(45) NULL,
-  nombre2_reclutamiento VARCHAR(45) NULL,
-  apellido1_reclutamiento VARCHAR(45) NULL,
-  apellido2_reclutamiento VARCHAR(45) NULL,
-  fecha_nacimiento_reclutamiento VARCHAR(10) NULL,
-  dpi_reclutamiento INT NULL,
-  fk_id_genero_reclutamiento INT NULL,
-  fk_id_estado_civil_reclutamiento INT NULL,
-  email_reclutamiento VARCHAR(125) NULL,
-  telefono_reclutamiento INT NULL,
-  departamento_reclutamiento VARCHAR(100) NULL,
-  direccion_zona_reclutamiento VARCHAR(7) NULL,
-  direccion_municipio_reclutamiento VARCHAR(100) NULL,
-  direccion_residencia_reclutamiento VARCHAR(45) NULL,
-  fk_id_licencia_conducir_reclutamiento INT NULL,
-  fk_id_puesto_reclutamiento INT NULL,
-  estado_reclutado_entrevista INT NULL,
-  fk_id_departamento_empresarial_reclutamiento INT NULL,
+  pk_id_reclutamiento 							INT NOT NULL,
+  fk_id_empleado_reclutamiento 					INT NULL,
+  fk_id_formacion_academica_reclutamiento 		INT NULL,
+  nombre1_reclutamiento 						VARCHAR(45) NULL,
+  nombre2_reclutamiento 						VARCHAR(45) NULL,
+  apellido1_reclutamiento 						VARCHAR(45) NULL,
+  apellido2_reclutamiento 						VARCHAR(45) NULL,
+  fecha_nacimiento_reclutamiento 				VARCHAR(10) NULL,
+  dpi_reclutamiento 							INT NULL,
+  fk_id_genero_reclutamiento 					INT NULL,
+  fk_id_estado_civil_reclutamiento 				INT NULL,
+  email_reclutamiento 							VARCHAR(125) NULL,
+  telefono_reclutamiento 						INT NULL,
+  numero_igss_reclutamiento						INT NULL,
+  fk_id_licencia_conducir_reclutamiento 		INT NULL,
+  fk_id_puesto_reclutamiento 					INT NULL,
+  estado_reclutado_entrevista 					INT NULL,
+  fk_id_departamento_empresarial_reclutamiento 	INT NULL,
   PRIMARY KEY (pk_id_reclutamiento)
 );
+create table if not exists DIRECCION(
+	pk_id_direccion 							int not null,
+    departamento_direccion 						varchar(45),
+    zona_direccion 								varchar(7),
+    municipio_direccion 						varchar(100),
+    residencia_direccion						varchar(45),
+    fk_empleado_direccion						int null,
+    fk_reclutamiento_direccion					int null,
+    primary key(pk_id_direccion)
+);
 CREATE TABLE IF NOT EXISTS CAPACITACION (
-  pk_id_capacitacion INT NOT NULL,
-  fk_id_encabezado_capacitacion INT NULL,
-  fk_id_empleado_capacitacion INT NULL,
-  resultado_capacitacion VARCHAR(5) NULL,
+  pk_id_capacitacion 							INT NOT NULL,
+  fk_id_encabezado_capacitacion 				INT NULL,
+  fk_id_empleado_capacitacion 					INT NULL,
+  resultado_capacitacion 						VARCHAR(5) NULL,
   PRIMARY KEY (pk_id_capacitacion)
 );
 CREATE TABLE IF NOT EXISTS FALTA (
-  pk_id_falta INT NOT NULL,
-  nombre_falta VARCHAR(45) NULL,
-  descripción_falta VARCHAR(45) NULL,
+  pk_id_falta 									INT NOT NULL,
+  nombre_falta 									VARCHAR(45) NULL,
+  descripción_falta 							VARCHAR(45) NULL,
   PRIMARY KEY (pk_id_falta)
 );
 CREATE TABLE IF NOT EXISTS FALTA_EMPLEADO (
-  pk_id_falta_empleado INT NOT NULL,
-  fk_id_empleado_falta_empleado INT NULL,
-  fk_id_tipo_falta_empleado INT NULL,
-  fecha_falta_empleado VARCHAR(10) NULL
+  pk_id_falta_empleado 							INT NOT NULL,
+  fk_id_empleado_falta_empleado 				INT NULL,
+  fk_id_tipo_falta_empleado 					INT NULL,
+  fecha_falta_empleado 							VARCHAR(10) NULL
 );
 CREATE TABLE IF NOT EXISTS ENCABEZADO_NOMINA (
-  pk_id_encabezado_nomina INT NOT NULL,
-  nombre_encabezado_nomina VARCHAR(45) NULL,
-  fecha_inicio_encabezado_nomina VARCHAR(10) NULL,
-  fecha_fin_encabezado_nomina VARCHAR(10) NULL,
+  pk_id_encabezado_nomina 						INT NOT NULL,
+  nombre_encabezado_nomina 						VARCHAR(45) NULL,
+  fecha_inicio_encabezado_nomina 				VARCHAR(10) NULL,
+  fecha_fin_encabezado_nomina 					VARCHAR(10) NULL,
   PRIMARY KEY (pk_id_encabezado_nomina)
 );
 CREATE TABLE IF NOT EXISTS PERCEPCION (
-  pk_id_percepcion INT NOT NULL,
-  nombre_percepcion VARCHAR(45) NULL,
-  monto_percepcion DOUBLE NULL,
-  descripcion_percepcion VARCHAR(150) NULL,
+  pk_id_percepcion 								INT NOT NULL,
+  nombre_percepcion 							VARCHAR(45) NULL,
+  monto_percepcion 								DOUBLE NULL,
+  descripcion_percepcion 						VARCHAR(150) NULL,
   PRIMARY KEY (pk_id_percepcion)
 );
 CREATE TABLE IF NOT EXISTS DEDUCCION (
-  pk_id_deduccion INT NOT NULL,
-  nombre_deduccion VARCHAR(45) NULL,
-  monto_deduccion DOUBLE NULL,
-  descripcion_deduccion VARCHAR(150) NULL,
+  pk_id_deduccion 								INT NOT NULL,
+  nombre_deduccion 								VARCHAR(45) NULL,
+  monto_deduccion 								DOUBLE NULL,
+  descripcion_deduccion 						VARCHAR(150) NULL,
   PRIMARY KEY (pk_id_deduccion)
 );
 CREATE TABLE IF NOT EXISTS DETALLE_NOMINA (
-  pk_id_detalle_nomina INT NOT NULL,
-  fk_id_encabezado_detalle_nomina INT NULL,
-  fk_id_empleado_detalle_nomina INT NULL,
-  fk_id_percepciones_detalle_nomina INT NULL,
-  fk_id_deducciones_detalle_nomina INT NULL,
-  salario_base_detalle_nomina DOUBLE NULL,
+  pk_id_detalle_nomina 							INT NOT NULL,
+  fk_id_encabezado_detalle_nomina 				INT NULL,
+  fk_id_empleado_detalle_nomina 				INT NULL,
+  fk_id_percepciones_detalle_nomina 			INT NULL,
+  fk_id_deducciones_detalle_nomina 				INT NULL,
+  salario_base_detalle_nomina 					DOUBLE NULL,
   PRIMARY KEY (pk_id_detalle_nomina)
 );
 CREATE TABLE IF NOT EXISTS ENTREVISTA (
-  pk_id_entrevista INT NOT NULL,
-  fk_id_empleado_entrevista INT NULL,
-  fk_id_reclutamiento_entrevista INT NULL,
-  fk_id_tipo_entrevista INT NULL,
-  resultado_entrevista INT NULL,
-  comentarios_entrevistador_entrevista VARCHAR(200) NULL,
+  pk_id_entrevista 								INT NOT NULL,
+  fk_id_empleado_entrevista 					INT NULL,
+  fk_id_reclutamiento_entrevista 				INT NULL,
+  fk_id_tipo_entrevista 						INT NULL,
+  resultado_entrevista 							INT NULL,
+  comentarios_entrevistador_entrevista 			VARCHAR(200) NULL,
   PRIMARY KEY (pk_id_entrevista)
 );
 #-------CONSULTAS INTELIGENTES---------------------------------------
 CREATE TABLE IF NOT EXISTS CONSULTA_INTELIGENTE (
-  pk_id_consulta_inteligente INT NOT NULL,
-  nombre_consulta_inteligente VARCHAR(100) NULL,
-  contenido_consulta_inteligente VARCHAR(250) NULL,
+  pk_id_consulta_inteligente 					INT NOT NULL,
+  nombre_consulta_inteligente 					VARCHAR(100) NULL,
+  contenido_consulta_inteligente 				VARCHAR(250) NULL,
   PRIMARY KEY (pk_id_consulta_inteligente)
 );
 CREATE TABLE IF NOT EXISTS DETALLE_CONSULTA_INTELIGENTE (
-  pk_id_detalle_consulta_inteligente INT NOT NULL,
-  id_empleado_detalle_consulta_inteligente INT NULL,
-  id_consulta_detalle_consulta_inteligente INT NULL,
+  pk_id_detalle_consulta_inteligente 			INT NOT NULL,
+  fk_id_empleado_detalle_consulta_inteligente 	INT NULL,
+  fk_id_consulta_detalle_consulta_inteligente 	INT NULL,
   PRIMARY KEY (pk_id_detalle_consulta_inteligente)
 );
 
@@ -903,6 +906,9 @@ alter table EMPLEADO add CONSTRAINT fk_contrato_empleado FOREIGN KEY (fk_id_cont
 alter table EMPLEADO add CONSTRAINT fk_puesto_empleado FOREIGN KEY (fk_id_puesto_empleado) REFERENCES PUESTO (pk_id_puesto) on delete restrict on update cascade;
 alter table EMPLEADO add CONSTRAINT fk_departamento_empresarial_empleado FOREIGN KEY (fk_id_departamento_empresarial_empleado) REFERENCES DEPARTAMENTO_EMPRESARIAL (pk_id__departamento_empresarial) on delete restrict on update cascade;
 
+alter table DIRECCION add constraint fk_empleado_direccion foreign key (fk_empleado_direccion) references EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
+alter table DIRECCION add constraint fk_reclutamiento_direccion foreign key (fk_reclutamiento_direccion) REFERENCES RECLUTAMIENTO (pk_id_reclutamiento) on delete restrict on update cascade;
+
 alter table ENCABEZADO_CAPACITACION add CONSTRAINT fk_curso_encabezado_capacitacion FOREIGN KEY (fk_id_curso_encabezado_capacitacion) REFERENCES CURSO (pk_id_curso) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table COMPETENCIA_DESARROLLO add CONSTRAINT fk_empleado_encabezado_desarrollo FOREIGN KEY (fk_id_empleado_encabezado_desarrollo) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table COMPETENCIA_DESARROLLO add CONSTRAINT fk_competencia_encabezado_desarrollo FOREIGN KEY (fk_id_competencia_encabezado_desarrollo) REFERENCES TIPO_COMPETENCIA (pk_id_competencia) ON DELETE RESTRICT on UPDATE CASCADE;
@@ -930,10 +936,9 @@ alter table ENTREVISTA add CONSTRAINT fk_empleado_entrevista FOREIGN KEY (fk_id_
 alter table ENTREVISTA add CONSTRAINT fk_reclutamiento_entrevista FOREIGN KEY (fk_id_reclutamiento_entrevista) REFERENCES RECLUTAMIENTO (pk_id_reclutamiento) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table ENTREVISTA add CONSTRAINT fk_tipo_entrevista FOREIGN KEY (fk_id_tipo_entrevista) REFERENCES TIPO_ENTREVISTA (pk_id_tipo_entrevista) ON DELETE RESTRICT ON UPDATE CASCADE;
 #-------OBJETO CONSULTAS INTELIGENTES--------------------------------------------- 
-alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_empleado_detalle_consulta_inteligente FOREIGN KEY (id_empleado_detalle_consulta_inteligente) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
-alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_consulta_detalle_consulta_inteligente FOREIGN KEY (id_consulta_detalle_consulta_inteligente) REFERENCES CONSULTA_INTELIGENTE (pk_id_consulta_inteligente) ON DELETE RESTRICT ON UPDATE CASCADE;
+alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_empleado_detalle_consulta_inteligente FOREIGN KEY (fk_id_empleado_detalle_consulta_inteligente) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
+alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_consulta_detalle_consulta_inteligente FOREIGN KEY (fk_id_consulta_detalle_consulta_inteligente) REFERENCES CONSULTA_INTELIGENTE (pk_id_consulta_inteligente) ON DELETE RESTRICT ON UPDATE CASCADE;
 #-------OBJETO SEGURIDAD---------------------------------------------------------- 
-alter table LOGIN add constraint fk_empleado_login foreign key(fk_idempleado_login) references EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
 alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_aplicacion foreign key (fk_idaplicacion_aplicacionperfil) references APLICACION(pk_id_aplicacion)on delete restrict on update cascade;
 alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_perfil foreign key (fk_idperfil_aplicacionperfil) references PERFIL(pk_id_perfil)on delete restrict on update cascade;
 alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_permiso foreign key (fk_idpermiso_aplicacionperfil) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
