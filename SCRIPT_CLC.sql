@@ -9,10 +9,21 @@ create table if not exists LOGIN(
 );
 -- ------------------------------------
 create table if not exists APLICACION(
-	pk_id_aplicacion				int(10) not null primary key auto_increment,
-    nombre_aplicacion				varchar(50),
-    informe_aplicacion				varchar(50),
-    estado_aplicacion				int(2)
+	pk_id_aplicacion int(10)not null auto_increment,
+    fk_id_modulo int(10)not null,
+    nombre_aplicacion varchar(40)not null,
+    descripcion_aplicacion varchar(45)not null,
+    estado_aplicacion int(1)not null,
+    primary key(pk_id_aplicacion),
+    key(pk_id_aplicacion)
+);
+create table if not exists MODULO(
+	pk_id_modulo int(10)not null auto_increment,
+    nombre_modulo varchar(30)not null,
+    descripcion_modulo varchar(50)not null,
+    estado_modulo int(1)not null,
+    primary key(pk_id_modulo),
+    key(pk_id_modulo)
 );
 create table if not exists PERFIL(
 	pk_id_perfil					int(10) not null primary key auto_increment,
@@ -38,7 +49,6 @@ create table if not exists APLICACIONUSUARIO(
     fk_idaplicacion_aplicacionusuario	int(10),
     fk_idpermiso_aplicacionusuario		int(10)
 );
-
 create table if not exists PERMISO(
 	pk_id_permiso				int(10) not null primary key auto_increment,
     insertar_permiso			boolean,
@@ -64,6 +74,32 @@ CREATE TABLE IF NOT EXISTS DETALLEBITACORA (
     querryantigua_detallebitacora VARCHAR(50),
     querrynueva_detallebitacora VARCHAR(50)
 );
+
+#-------REPORTEADOR-------------------------------------
+create table if not exists REPORTE(
+	pk_id_reporte int(10)not null auto_increment,
+    nombre_reporte varchar(40)not null,
+    ruta_reporte varchar(100)not null,
+    estado_reporte int(1)not null,
+    primary key(pk_id_reporte),
+    key(pk_id_reporte)
+);
+create table if not exists REPORTE_MODULO(
+	fk_id_reporte int(10)not null ,
+    fk_id_modulo int(10)not null,
+    estado_reporte_modulo int(1)not null,
+    primary key(fk_id_reporte,fk_id_modulo),
+    key(fk_id_reporte,fk_id_modulo)
+);
+create table if not exists REPORTE_APLICATIVO(
+	fk_id_reporte int(10)not null,
+    fk_id_aplicacion int(10)not null,
+    fk_id_modulo int(10)not null,
+    estado_reporte_aplicativo int(1)not null,
+    primary key(fk_id_reporte,fk_id_aplicacion,fk_id_modulo),
+    key(fk_id_reporte,fk_id_aplicacion,fk_id_modulo)
+);
+
 #-------CRM---------------------------------------------
 CREATE TABLE IF NOT EXISTS CLIENTE (
   pk_idcliente 						INT NOT NULL,
@@ -359,244 +395,267 @@ CREATE TABLE BALANCE_DETALLE(
 	acreedor_balance_detalle 				double
 );
 #-------SCM--------------------------------------------- 
-create table INVENTARIOSCM(
-	pk_id_inventario 						int(10)not null auto_increment,
-    fk_id_bodega 							int(10)not null,
-    fk_id_producto 							int(10)not null,
-    fecha_ingreso 							datetime not null,
-    fecha_salida 							datetime not null,
-    cantidad_ingresa 						int(10)not null,
-    cantidad_salida 						int(10)not null,
-    existencia 								int(10)not null,
-    estado 									int(1)not null,
+create table INVENTARIO(
+	pk_id_inventario int(10)not null auto_increment,
+    fk_id_bodega int(10)not null,
+    fk_id_producto int(10)not null,
+    existencia_inventario int(10)not null,
+    estado_inventario int(1)not null,
     primary key(pk_id_inventario),
     key(pk_id_inventario)
 );
 create table PRODUCTOSCM(
-	pk_id_producto 							int(10)not null auto_increment,
-    fk_id_lineaProducto 					int(10)not null,
-    fk_id_categoria_producto 				int(10)not null,
-    precio 									double(12,2)not null,
-    medida 									double(5,2)not null,
-    descripcion 							varchar(45)not null,
-    estado 									int(1)not null,
+	pk_id_producto int(10)not null auto_increment,
+    fk_id_linea_producto int(10)not null,
+    fk_id_categoria_producto int(10)not null,
+    nombre_producto varchar(50)not null,
+    precio_producto double(12,2)not null,
+    medida_producto double(5,2)not null,
+    descripcion_producto varchar(45)not null,
+    estado_producto int(1)not null,
     primary key(pk_id_producto),
     key(pk_id_producto)
 );
 create table LINEA_PRODUCTO(
-	pk_id_linea 							int(10)not null auto_increment,
-    descripcion 							varchar(50) not null,
-    estado 									int(1) not null,
-    primary key(pk_id_linea),
-    key(pk_id_linea)
+	pk_id_linea_producto int(10)not null auto_increment,
+    nombre_linea_producto varchar(25)not null,
+    descripcion_linea_producto varchar(50) not null,
+    estado_linea_producto int(1) not null,
+    primary key(pk_id_linea_producto),
+    key(pk_id_linea_producto)
 );
 create table PROVEEDOR(
-	pk_id_proveedor 						int(10)not null auto_increment,
-    fk_id_pais 								int(10)not null,
-    razon_social 							varchar(45)not null,
-    representante_legal 					varchar(45) not null,
-    nit 									varchar(20)not null,
-    estado 									int(1)not null,
+	pk_id_proveedor int(10)not null auto_increment,
+    fk_id_pais int(10)not null,
+    razon_social_proveedor varchar(45)not null,
+    representante_legal_proveedor varchar(45) not null,
+    nit_proveedor varchar(20)not null,
+    estado_proveedor int(1)not null,
     primary key(pk_id_proveedor),
     key(pk_id_proveedor)
 );
 create table TELEFONO_PROVEEDOR(
-	pk_id_telefono_proveedor 				int(10)not null auto_increment,
-    fk_id_proveedor 						int(10)not null,
-    telefono 								varchar(20)not null,
+	pk_id_telefono_proveedor int(10)not null auto_increment,
+    fk_id_proveedor int(10)not null,
+    telefono_telefono_proveedor varchar(20)not null,
     primary key(pk_id_telefono_proveedor),
     key(pk_id_telefono_proveedor)
 );
 create table CORREO_PROVEEDOR(
-	pk_id_correo_proveedor 					int(10)not null auto_increment,
-    fk_id_proveedor 						int(10)not null,
-    correo 									varchar(50)not null,
+	pk_id_correo_proveedor int(10)not null auto_increment,
+    fk_id_proveedor int(10)not null,
+    correo_correo_proveedor varchar(50)not null,
     primary key(pk_id_correo_proveedor),
     key(pk_id_correo_proveedor)
 );
 create table CATEGORIA_PRODUCTO(
-	pk_id_categoria_producto 				int(10) not null auto_increment,
-    descripcion 							varchar(30)not null,
-    estado 									int(1)not null,
+	pk_id_categoria_producto int(10) not null auto_increment,
+    nombre_categoria_producto varchar(35)not null,
+    descripcion_categoria_producto varchar(60)not null,
+    estado_categoria_producto int(1)not null,
     primary key(pk_id_categoria_producto),
     key(pk_id_categoria_producto)
 );
 create table PAIS(
-	pk_id_pais 								int(10)not null auto_increment,
-    nombre 									varchar(40)not null,
-    capital 								varchar(40)not null,
-    estado 									int(1)not null,
+	pk_id_pais int(10)not null auto_increment,
+    nombre_pais varchar(40)not null,
+    capital_pais varchar(40)not null,
+    estado_pais int(1)not null,
     primary key(pk_id_pais),
     key(pk_id_pais)
-); 
+);
 create table DEPARTAMENTO(
-	pk_id_departamento 						int(10)not null auto_increment,
-    nombre 									varchar(30)not null,
-    descripcion 							varchar(45)not null,
-    estado 									int(1)not null,
+	pk_id_departamento int(10)not null auto_increment,
+    nombre_departamento varchar(30)not null,
+    descripcion_departamento varchar(45)not null,
+    estado_departamento int(1)not null,
     primary key(pk_id_departamento),
     key(pk_id_departamento)
 );
 create table MUNICIPIO(
-	pk_id_municipio 						int(10)not null auto_increment,
-    fk_id_departamento 						int(10)not null,
-    nombre 									varchar(30)not null,
-    descripcion 							varchar(45)not null,
-    estado 									int(1)not null,
+	pk_id_municipio int(10)not null auto_increment,
+    fk_id_departamento int(10)not null,
+    nombre_municipio varchar(30)not null,
+    descripcion_municipio varchar(45)not null,
+    estado_municipio int(1)not null,
     primary key(pk_id_municipio),
     key(pk_id_municipio)
 );
 create table ENCARGADO_BODEGA(
-	pk_id_encargado_bodega 					int(10)not null auto_increment,
-    fk_id_empleado 							int(10)not null,
-    fk_id_bodega 							int(10)not null,
-    estado 									int(1)not null,
+	pk_id_encargado_bodega int(10)not null auto_increment,
+    fk_id_empleado int(10)not null,
+    fk_id_bodega int(10)not null,
+    estado_encargado_bodega int(1)not null,
     primary key(pk_id_encargado_bodega),
     key(pk_id_encargado_bodega)
 );
-
 create table BODEGA(
-	pk_id_bodega 							int(10)not null auto_increment,
-    fk_id_municipio 						int(10)not null,
-    dimensiones 							double(5,2)not null,
-    direccion 								varchar(45)not null,
-    telefono 								int(8)not null,
-    descripcion 							varchar(45)not null,
-    estado 									int(1)not null,
+	pk_id_bodega int(10)not null auto_increment,
+    fk_id_municipio int(10)not null,
+    dimensiones_bodega double(5,2)not null,
+    direccion_bodega varchar(45)not null,
+    telefono_bodega int(8)not null,
+    descripcion_bodega varchar(45)not null,
+    estado_bodega int(1)not null,
     primary key(pk_id_bodega),
     key(pk_id_bodega)
 );
 create table COMPRA_ENCABEZADO(
-	pk_id_encabezado_compra 				int(10)not null,
-    fk_id_proveedor 						int(10)not null,
-    fec_compra 								datetime not null,
-    total_compra 							double(12,2) not null,
-    estado 									int(1)not null,
-    primary key(pk_id_encabezado_compra),
-    key(pk_id_encabezado_compra)
+	pk_id_compra_encabezado int(10)not null,
+    fk_id_proveedor int(10)not null,
+    fec_compra_encabezado_compra datetime not null,
+    total_compra_encabezado_compra double(12,2) not null,
+    estado_encabezado_compra int(1)not null,
+    primary key(pk_id_compra_encabezado),
+    key(pk_id_compra_encabezado)
 );
 create table COMPRA_DETALLE(
-	fk_id_encabezado_compra 				int(10)not null,	
-	cod_linea 								int(10)not null,
-    fk_id_producto 							int(10)not null,
-    cantidad 								int(10)not null,
-    precio_unitario 						double(8,2)not null,
-    subtotal 								double(12,2)not null,
-    estado 									int(1)not null,
-    primary key(fk_id_encabezado_compra,cod_linea),
-    key(fk_id_encabezado_compra,cod_linea)
+	fk_id_compra_encabezado int(10)not null,
+	cod_linea_compra_detalle int(10)not null,
+    fk_id_producto int(10)not null,
+    cantidad_compra_detalle int(10)not null,
+    precio_unitario_compra_detalle double(8,2)not null,
+    subtotal_compra_detalle double(12,2)not null,
+    estado_compra_detalle int(1)not null,
+    primary key(fk_id_compra_encabezado,cod_linea_compra_detalle),
+    key(fk_id_compra_encabezado,cod_linea_compra_detalle)
 );
 create table FABRICA(
-	pk_id_fabrica 							int(10)not null,
-    fk_id_municipio 						int(10)not null,
-    dimensiones 							double(5,2)not null,
-    direccion 								varchar(45)not null,
-    telefono 								int(8)not null,
-    descripcion 							varchar(45)not null,
-    estado 									int(1)not null,
+	pk_id_fabrica int(10)not null auto_increment,
+    fk_id_municipio int(10)not null,
+    dimensiones_fabrica double(5,2)not null,
+    direccion_fabrica varchar(45)not null,
+    telefono_fabrica int(8)not null,
+    descripcion_fabrica varchar(45)not null,
+    estado_fabrica int(1)not null,
     primary key(pk_id_fabrica),
     key(pk_id_fabrica)
 );
 create table PEDIDO_ENCABEZADO(
-	pk_id_encabezado_pedido 				int(10)not null,
-    fk_id_fabrica 							int(10)not null,
-    fec_pedido 								datetime not null,
-    total_pedido 							double(12,2) not null,
-    estado 									int(1)not null,
-    primary key(pk_id_encabezado_pedido),
-    key(pk_id_encabezado_pedido)
+	pk_id_pedido_encabezado int(10)not null,
+    fk_id_fabrica int(10)not null,
+    fec_pedido_pedido_encabezado datetime not null,
+    total_pedido_encabezado double(12,2) not null,
+    estado_pedido_encabezado int(1)not null,
+    primary key(pk_id_pedido_encabezado),
+    key(pk_id_pedido_encabezado)
 );
 create table PEDIDO_DETALLE(
-	fk_id_encabezado_pedido 			int(10)not null,
-	cod_linea 							int(10)not null,
-    fk_id_producto 						int(10)not null,
-    cantidad 							int(10)not null,
-    precio_unitario 					double(8,2)not null, /*Precio dado por fábrica*/
-    subtotal 							double(12,2)not null,
-    estado 								int(1)not null,
-    primary key(fk_id_encabezado_pedido,cod_linea),
-    key(fk_id_encabezado_pedido,cod_linea)
+	fk_id_pedido_encabezado int(10)not null,
+	cod_linea_pedido_detalle int(10)not null,
+    fk_id_producto int(10)not null,
+    cantidad_pedido_detalle int(10)not null,
+    precio_unitario_pedido_detalle double(8,2)not null, /*Precio dado por fábrica*/
+    subtotal_pedido_detalle double(12,2)not null,
+    estado_pedido_detalle int(1)not null,
+    primary key(fk_id_pedido_encabezado,cod_linea_pedido_detalle),
+    key(fk_id_pedido_encabezado,cod_linea_pedido_detalle)
 );
 create table ESTADO_PRODUCTO(
-	pk_id_estado_producto 				int(10)not null auto_increment,
-    descripcion 						varchar(45)not null,
-    estado 								int(1)not null,
+	pk_id_estado_producto int(10)not null auto_increment,
+    nombre_estado_producto varchar(25)not null,
+    descripcion_estado_producto varchar(45)not null,
+    estado_estado_producto int(1)not null,
     primary key(pk_id_estado_producto),
     key(pk_id_estado_producto)
 );
 create table DEVOLUCION_ENCABEZADO(
-	pk_id_encabezado_devolucion 		int(10)not null,
-    fk_id_fabrica 						int(10)not null,
-    fk_id_categoria_producto 			int(10)not null,
-    fec_devolucion 						datetime not null,
-    total_devolucion 					double(12,2) not null,
-    estado 								int(1)not null,
-    primary key(pk_id_encabezado_devolucion),
-    key(pk_id_encabezado_devolucion)
-); 
+	pk_id_devolucion_encabezado int(10)not null,
+    fk_id_fabrica int(10)not null,
+    fk_id_categoria_producto int(10)not null,
+    fec_devolucion_encabezado datetime not null,
+    total_devolucion_encabezado double(12,2) not null,
+    estado_devolucion_encabezado int(1)not null,
+    primary key(pk_id_devolucion_encabezado),
+    key(pk_id_devolucion_encabezado)
+);
 create table VEHICULO (
-	pk_id_vehiculo 						int(10)not null auto_increment,
-	fk_id_marca 						int (10) not null,
-	placa 								varchar(45)not null,
-	modelo 								varchar(45)not null,
-	color 								varchar(45)not null,
-	anio  								varchar(45)not null,
-	tipo_combustible 					varchar(45)not null,
-	estado 								int(1)not null,
-	primary key(pk_id_vehiculo),
-	key(pk_id_vehiculo)
+  pk_id_vehiculo int(10)not null auto_increment,
+  fk_id_marca int (10) not null,
+  placa_vehiculo varchar(45)not null,
+  modelo_vehiculo varchar(45)not null,
+  color_vehiculo varchar(45)not null,
+  anio_vehiculo  varchar(45)not null,
+  tipo_combustible_vehiculo varchar(45)not null,
+  estado_vehiculo int(1)not null,
+  primary key(pk_id_vehiculo),
+  key(pk_id_vehiculo)
 );
 create table MARCA (
-	pk_id_marca 						int(10)not null auto_increment,
-	descripcion 						varchar(45)not null,
-	estado 								int(1)not null,
+	pk_id_marca int(10)not null auto_increment,
+	descripcion_marca varchar(45)not null,
+	estado_marca int(1)not null,
 	primary key(pk_id_marca),
 	key(pk_id_marca)
 );
 create table SUCURSAL(
-  pk_id_sucursal 								int(10)not null auto_increment,
-  fk_id_municipio 								int(10)not null,
-  nombre 										varchar(45)not null,
-  direccion 									varchar(45)not null,
-  telefono 										int(8)not null,
-  descripcion 									varchar(45)not null,
-  estado 										int(1)not null,
+  pk_id_sucursal int(10)not null auto_increment,
+  fk_id_municipio int(10)not null,
+  nombre_sucursal varchar(45)not null,
+  direccion_sucursal varchar(45)not null,
+  telefono_sucursal int(8)not null,
+  descripcion_sucursal varchar(45)not null,
+  estado_sucursal int(1)not null,
   primary key(pk_id_sucursal),
   key(pk_id_sucursal) 
 );
 create table ENVIO_PRODUCTO(
-  pk_id_envio_producto 							int(10)not null auto_increment,
-  fk_id_ruta 									int(10)not null,
-  fk_id_producto 								int (10) not null, 
-  fk_id_empleado 								int (10) not null,
-  fk_id_vehiculo 								int (10) not null,
-  fec_envio 									datetime not null,
-  fec_recibido 									datetime not null,
-  descripcion 									varchar(45)not null,
+  pk_id_envio_producto int(10)not null auto_increment,
+  fk_id_ruta int(10)not null,
+  fk_id_producto int (10) not null, 
+  fk_id_empleado int (10) not null,
+  fk_id_vehiculo int (10) not null,
+  fec_envio_producto datetime not null,
+  fec_recibido_envio_producto datetime not null,
+  descripcion_envio_producto varchar(45)not null,
   primary key(pk_id_envio_producto),
   key(pk_id_envio_producto) 
 );
 create table RUTA(
-	pk_id_ruta 									int(10)not null auto_increment,
-    origen 										int(10) not null,
-    destino 									int(10)not null,
-    descripcion 								varchar(45)not null,
-    estado 										int(1)not null,
+	pk_id_ruta int(10)not null auto_increment,
+    origen_ruta int(10) not null,
+    destino_ruta int(10)not null,
+    descripcion_ruta varchar(45)not null,
+    estado_ruta int(1)not null,
     primary key(pk_id_ruta),
     key(pk_id_ruta)
 );
 create table DEVOLUCION_DETALLE(
-	fk_id_encabezado_devolucion 				int(10)not null,
-	cod_linea 									int(10)not null,
-    fk_id_producto 								int(10)not null,
-    fk_id_estado_producto 						int(10)not null,
-    cantidad 									int(10)not null,
-    iva_por_cobrar 								double(8,2)not null,/*ESTO LO CALCULA FINANZAS*/
-    precio_unitario 							double(8,2)not null,
-    subtotal 									double(12,2)not null,
-    estado 										int(1)not null,
-    primary key(fk_id_encabezado_devolucion,cod_linea),
-    key(fk_id_encabezado_devolucion,cod_linea)
+	fk_id_devolucion_encabezado int(10)not null,
+	cod_linea_devolucion_encabezado int(10)not null,
+    fk_id_producto int(10)not null,
+    fk_id_estado_producto int(10)not null,
+    cantidad_devolucion_encabezado int(10)not null,
+    iva_por_cobrar_devolucion_encabezado double(8,2)not null,/*ESTO LO CALCULA FINANZAS*/
+    precio_unitario_devolucion_encabezado double(8,2)not null,
+    subtotal_devolucion_encabezado double(12,2)not null,
+    estado_devolucion_encabezado int(1)not null,
+    primary key(fk_id_devolucion_encabezado,cod_linea_devolucion_encabezado),
+    key(fk_id_devolucion_encabezado,cod_linea_devolucion_encabezado)
+);
+create table MOVIMIENTO_INVENTARIO(
+	pk_id_movimiento_inventario int(10)not null,
+    fecha_movimiento_inventario datetime not null,
+    fk_id_tipo_movimiento int(10)not null,
+	primary key(pk_id_movimiento_inventario),
+    key(pk_id_movimiento_inventario)
+);
+create table TIPO_MOVIMIENTO(
+	pk_id_tipo_movimiento int(10)not null,
+    nombre_tipo_movimiento varchar(45)not null,
+    signo_tipo varchar(1),
+	primary key(pk_id_tipo_movimiento),
+    key(pk_id_tipo_movimiento)
+);
+create table MOVIMIENTO_INVENTARIO_DETALLE(
+	pk_id_movimiento_inventario_detalle int(10)not null,
+    fk_id_movimiento_inventario int(10)not null,
+    fk_id_producto int(10)not null,
+	cantidad int(8)not null,
+    origen varchar(35)not null,
+    destino varchar(35)not null,
+	primary key(pk_id_movimiento_inventario_detalle),
+    key(pk_id_movimiento_inventario_detalle)
 );
 #-------HRM--------------------------------------------- 
 CREATE TABLE IF NOT EXISTS GENERO (
@@ -806,6 +865,33 @@ CREATE TABLE IF NOT EXISTS DETALLE_CONSULTA_INTELIGENTE (
   PRIMARY KEY (pk_id_detalle_consulta_inteligente)
 );
 
+
+#-------ALTER TABLE REPORTEADOR-------------------------------------
+alter table REPORTE_MODULO add constraint fk_reporte_de_modulo foreign key(fk_id_reporte) references REPORTE(pk_id_reporte);
+alter table REPORTE_MODULO add constraint fk_reporte_de_modulo_reportes foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
+alter table REPORTE_APLICATIVO add constraint fk_reporte_aplicativo_reporte foreign key(fk_id_reporte) references REPORTE(pk_id_reporte);
+alter table REPORTE_APLICATIVO add constraint fk_reporte_aplicativo_modulo foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
+alter table REPORTE_APLICATIVO add constraint fk_report_aplicativo foreign key(fk_id_aplicacion) references APLICACION(pk_id_aplicacion);
+alter table APLICACION add constraint fk_aplicativo_modulo foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
+#-------OBJETO CONSULTAS INTELIGENTES--------------------------------------------- 
+alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_empleado_detalle_consulta_inteligente FOREIGN KEY (fk_id_empleado_detalle_consulta_inteligente) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
+alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_consulta_detalle_consulta_inteligente FOREIGN KEY (fk_id_consulta_detalle_consulta_inteligente) REFERENCES CONSULTA_INTELIGENTE (pk_id_consulta_inteligente) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+#-------OBJETO SEGURIDAD---------------------------------------------------------- 
+alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_aplicacion foreign key (fk_idaplicacion_aplicacionperfil) references APLICACION(pk_id_aplicacion)on delete restrict on update cascade;
+alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_perfil foreign key (fk_idperfil_aplicacionperfil) references PERFIL(pk_id_perfil)on delete restrict on update cascade;
+alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_permiso foreign key (fk_idpermiso_aplicacionperfil) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
+alter table PERFILUSUARIO add constraint fk_perfil_usuario_login foreign key(fk_idusuario_perfilusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
+alter table PERFILUSUARIO add constraint fk_perfil_usuario_perfil foreign key (fk_idperfil_perfilusuario) references PERFIL(pk_id_perfil) on delete restrict on update cascade;
+
+alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_login foreign key(fk_idlogin_aplicacionusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
+alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_aplicacion foreign key (fk_idaplicacion_aplicacionusuario) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
+alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_permiso foreign key(fk_idpermiso_aplicacionusuario) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
+
+alter table BITACORA add constraint fk_login_bitacora foreign key (fk_idusuario_bitacora) references LOGIN (pk_id_login) on delete restrict on update cascade;
+alter table BITACORA add constraint fk_aplicacion_bitacora foreign key (fk_idaplicacion_bitacora) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
+alter table DETALLEBITACORA add constraint fk_bitacora_detallebitacora foreign key(fk_idbitacora_detallebitacora) references BITACORA(pk_id_bitacora) on delete restrict on update cascade;
+
 #-------ALTER TABLE CRM---------------------------------------------  
 ALTER TABLE PRODUCTO ADD CONSTRAINT fk_producto_categoriatamaño1 FOREIGN KEY (fk_idcategoriatamaño) REFERENCES CATEGORIA_TAMAÑO (pk_idcategoriatamaño) on delete no action on update no action;
 ALTER TABLE PRODUCTO ADD CONSTRAINT fk_producto_categoriatipo1 FOREIGN KEY (fk_idcategoriatipo) REFERENCES CATEGORIA_TIPO (pk_idcategoriatipo) on delete no action on update no action;
@@ -862,39 +948,43 @@ ALTER TABLE BALANCE_DETALLE ADD CONSTRAINT fk_balanceencabezado_detalle FOREIGN 
 ALTER TABLE BALANCE_DETALLE ADD CONSTRAINT fk_balancedetalle_cuenta FOREIGN KEY (pk_idcuenta) REFERENCES CUENTA_CONTABLE (pk_idcuenta)on delete no action on update no action;
 
 #-------ALTER TABLE SCM--------------------------------------------- 
-alter table DEVOLUCION_DETALLE add constraint fk_devolucionDetalle_encabezado foreign key(fk_id_encabezado_devolucion) references DEVOLUCION_ENCABEZADO(pk_id_encabezado_devolucion)on delete no action on update no action;
-alter table DEVOLUCION_DETALLE add constraint fk_devolucion_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto)on delete no action on update no action;
-alter table DEVOLUCION_DETALLE add constraint fk_devolucion_Estadoproducto foreign key(fk_id_estado_producto) references ESTADO_PRODUCTO(pk_id_estado_producto)on delete no action on update no action;
+alter table MOVIMIENTO_INVENTARIO add constraint fk_mov_inventario_tipo foreign key(fk_id_tipo_movimiento) references TIPO_MOVIMIENTO(pk_id_tipo_movimiento);
+alter table MOVIMIENTO_INVENTARIO_DETALLE add constraint fk_mov_inventario_detalle_mov foreign key(fk_id_movimiento_inventario) references MOVIMIENTO_INVENTARIO(pk_id_movimiento_inventario);
+alter table MOVIMIENTO_INVENTARIO_DETALLE add constraint fk_mov_inventario_detalle_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table DEVOLUCION_DETALLE add constraint fk_devolucionDetalle_encabezado foreign key(fk_id_devolucion_encabezado) references DEVOLUCION_ENCABEZADO(pk_id_devolucion_encabezado);
+alter table DEVOLUCION_DETALLE add constraint fk_devolucion_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table DEVOLUCION_DETALLE add constraint fk_devolucion_Estadoproducto foreign key(fk_id_estado_producto) references ESTADO_PRODUCTO(pk_id_estado_producto);
 
-alter table INVENTARIOSCM add constraint fk_inventario_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto)on delete no action on update no action;
-alter table INVENTARIOSCM add constraint fk_inventario_bodega foreign key(fk_id_bodega) references BODEGA(pk_id_bodega)on delete no action on update no action;
-alter table PRODUCTOSCM add constraint fk_producto_lineaProducto foreign key(fk_id_lineaProducto) references LINEA_PRODUCTO(pk_id_linea)on delete no action on update no action;
-alter table PRODUCTOSCM add constraint fk_producto_categoriaProducto foreign key(fk_id_categoria_producto) references CATEGORIA_PRODUCTO(pk_id_categoria_producto)on delete no action on update no action;
-alter table PROVEEDOR add constraint fk_proveedor_pais foreign key(fk_id_pais) references PAIS(pk_id_pais)on delete no action on update no action;
+alter table INVENTARIO add constraint fk_inventario_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table INVENTARIO add constraint fk_inventario_bodega foreign key(fk_id_bodega) references BODEGA(pk_id_bodega);
+alter table PRODUCTOSCM add constraint fk_producto_lineaProducto foreign key(fk_id_linea_producto) references LINEA_PRODUCTO(pk_id_linea_producto);
+alter table PRODUCTOSCM add constraint fk_producto_categoriaProducto foreign key(fk_id_categoria_producto) references CATEGORIA_PRODUCTO(pk_id_categoria_producto);
+alter table PROVEEDOR add constraint fk_proveedor_pais foreign key(fk_id_pais) references PAIS(pk_id_pais);
 
-alter table TELEFONO_PROVEEDOR add constraint fk_proveedor_telefono foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor)on delete no action on update no action;
-alter table CORREO_PROVEEDOR add constraint fk_proveedor_correo foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor)on delete no action on update no action;
-alter table DEVOLUCION_ENCABEZADO add constraint fk_devolucion_fabrica foreign key(fk_id_fabrica) references FABRICA(pk_id_fabrica)on delete no action on update no action;
-alter table DEVOLUCION_ENCABEZADO add constraint fk_devolucion_categoria foreign key(fk_id_categoria_producto) references CATEGORIA_PRODUCTO(pk_id_categoria_producto)on delete no action on update no action;
-alter table PEDIDO_DETALLE add constraint fk_encabezado_pedido foreign key(fk_id_encabezado_pedido) references PEDIDO_ENCABEZADO(pk_id_encabezado_pedido)on delete no action on update no action;
-alter table PEDIDO_DETALLE add constraint fk_pedido_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto)on delete no action on update no action;
-alter table PEDIDO_ENCABEZADO add constraint fk_pedido_fabrica foreign key(fk_id_fabrica) references FABRICA(pk_id_fabrica)on delete no action on update no action;
-alter table FABRICA add constraint fk_fabrica_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio)on delete no action on update no action;
-alter table COMPRA_DETALLE add constraint fk_compra_detalle foreign key(fk_id_encabezado_compra) references COMPRA_ENCABEZADO(pk_id_encabezado_compra)on delete no action on update no action;
-alter table COMPRA_DETALLE add constraint fk_compra_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto)on delete no action on update no action;
-alter table COMPRA_ENCABEZADO add constraint fk_compra_proveedor foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor)on delete no action on update no action;
+alter table TELEFONO_PROVEEDOR add constraint fk_proveedor_telefono foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor);
+alter table CORREO_PROVEEDOR add constraint fk_proveedor_correo foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor);
+alter table DEVOLUCION_ENCABEZADO add constraint fk_devolucion_fabrica foreign key(fk_id_fabrica) references FABRICA(pk_id_fabrica);
+alter table DEVOLUCION_ENCABEZADO add constraint fk_devolucion_categoria foreign key(fk_id_categoria_producto) references CATEGORIA_PRODUCTO(pk_id_categoria_producto);
+alter table PEDIDO_DETALLE add constraint fk_encabezado_pedido foreign key(fk_id_pedido_encabezado) references PEDIDO_ENCABEZADO(pk_id_pedido_encabezado);
+alter table PEDIDO_DETALLE add constraint fk_pedido_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table PEDIDO_ENCABEZADO add constraint fk_pedido_fabrica foreign key(fk_id_fabrica) references FABRICA(pk_id_fabrica);
+alter table FABRICA add constraint fk_fabrica_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio);
+alter table COMPRA_DETALLE add constraint fk_compra_detalle foreign key(fk_id_compra_encabezado) references COMPRA_ENCABEZADO(pk_id_compra_encabezado);
+alter table COMPRA_DETALLE add constraint fk_compra_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table COMPRA_ENCABEZADO add constraint fk_compra_proveedor foreign key(fk_id_proveedor) references PROVEEDOR(pk_id_proveedor);
 
-alter table BODEGA add constraint fk_bodega_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio)on delete no action on update no action;
+alter table BODEGA add constraint fk_bodega_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio);
+alter table ENCARGADO_BODEGA add constraint fk_empleado_encargado foreign key(fk_id_empleado) references EMPLEADO(pk_id_empleado);
+alter table ENCARGADO_BODEGA add constraint fk_empleado_bodega1 foreign key(fk_id_bodega) references BODEGA(pk_id_bodega);
+alter table MUNICIPIO add constraint fk_municipio_departamento foreign key(fk_id_departamento) references DEPARTAMENTO(pk_id_departamento);
 
-alter table ENCARGADO_BODEGA add constraint fk_empleado_bodega foreign key(fk_id_bodega) references BODEGA(pk_id_bodega)on delete no action on update no action;
-alter table MUNICIPIO add constraint fk_municipio_departamento foreign key(fk_id_departamento) references DEPARTAMENTO(pk_id_departamento)on delete no action on update no action;
+alter table ENVIO_PRODUCTO add constraint fk_envio_producto_vehiculo foreign key(fk_id_vehiculo) references VEHICULO(pk_id_vehiculo);
+alter table VEHICULO add constraint fk_vehiculo_marca foreign key(fk_id_marca) references MARCA (pk_id_marca);
+alter table SUCURSAL add constraint fk_sucursal_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio);
 
-alter table VEHICULO add constraint fk_vehiculo_marca foreign key(fk_id_marca) references MARCA (pk_id_marca)on delete no action on update no action;
-alter table SUCURSAL add constraint fk_sucursal_municipio foreign key(fk_id_municipio) references MUNICIPIO(pk_id_municipio)on delete no action on update no action;
-
-alter table ENVIO_PRODUCTO add constraint fk_envio_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto)on delete no action on update no action;
-
-alter table ENVIO_PRODUCTO add constraint fk_envio_ruta foreign key(fk_id_ruta) references RUTA(pk_id_ruta)on delete no action on update no action;
+alter table ENVIO_PRODUCTO add constraint fk_envio_producto foreign key(fk_id_producto) references PRODUCTOSCM(pk_id_producto);
+alter table ENVIO_PRODUCTO add constraint fk_envio_empleado foreign key(fk_id_empleado) references EMPLEADO(pk_id_empleado);
+alter table ENVIO_PRODUCTO add constraint fk_envio_ruta foreign key(fk_id_ruta) references RUTA(pk_id_ruta);
 
 #-------ALTER TABLE HRM--------------------------------------------- 
 alter table CONTRATO add constraint fk_tipo_contrato foreign key (fk_id_tipo_contrato) references TIPO_CONTRATO (pk_id_tipo_contrato) on delete restrict on update cascade;
@@ -935,29 +1025,11 @@ alter table DETALLE_NOMINA add CONSTRAINT fk_deduccion_detalle_nomina FOREIGN KE
 alter table ENTREVISTA add CONSTRAINT fk_empleado_entrevista FOREIGN KEY (fk_id_empleado_entrevista) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table ENTREVISTA add CONSTRAINT fk_reclutamiento_entrevista FOREIGN KEY (fk_id_reclutamiento_entrevista) REFERENCES RECLUTAMIENTO (pk_id_reclutamiento) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table ENTREVISTA add CONSTRAINT fk_tipo_entrevista FOREIGN KEY (fk_id_tipo_entrevista) REFERENCES TIPO_ENTREVISTA (pk_id_tipo_entrevista) ON DELETE RESTRICT ON UPDATE CASCADE;
-#-------OBJETO CONSULTAS INTELIGENTES--------------------------------------------- 
-alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_empleado_detalle_consulta_inteligente FOREIGN KEY (fk_id_empleado_detalle_consulta_inteligente) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
-alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_consulta_detalle_consulta_inteligente FOREIGN KEY (fk_id_consulta_detalle_consulta_inteligente) REFERENCES CONSULTA_INTELIGENTE (pk_id_consulta_inteligente) ON DELETE RESTRICT ON UPDATE CASCADE;
-#-------OBJETO SEGURIDAD---------------------------------------------------------- 
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_aplicacion foreign key (fk_idaplicacion_aplicacionperfil) references APLICACION(pk_id_aplicacion)on delete restrict on update cascade;
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_perfil foreign key (fk_idperfil_aplicacionperfil) references PERFIL(pk_id_perfil)on delete restrict on update cascade;
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_permiso foreign key (fk_idpermiso_aplicacionperfil) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
-alter table PERFILUSUARIO add constraint fk_perfil_usuario_login foreign key(fk_idusuario_perfilusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
-alter table PERFILUSUARIO add constraint fk_perfil_usuario_perfil foreign key (fk_idperfil_perfilusuario) references PERFIL(pk_id_perfil) on delete restrict on update cascade;
 
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_login foreign key(fk_idlogin_aplicacionusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_aplicacion foreign key (fk_idaplicacion_aplicacionusuario) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_permiso foreign key(fk_idpermiso_aplicacionusuario) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
 
-alter table BITACORA add constraint fk_login_bitacora foreign key (fk_idusuario_bitacora) references LOGIN (pk_id_login) on delete restrict on update cascade;
-alter table BITACORA add constraint fk_aplicacion_bitacora foreign key (fk_idaplicacion_bitacora) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
-alter table DETALLEBITACORA add constraint fk_bitacora_detallebitacora foreign key(fk_idbitacora_detallebitacora) references BITACORA(pk_id_bitacora) on delete restrict on update cascade;
 ##-------RELACIONES CON LOS MODULOS----------------------------------------------------------------------------------------------------------------------------------
  ALTER TABLE FACTURA ADD CONSTRAINT fk_FACTURA_EMPLEADO1 FOREIGN KEY (fK_idEMPLEADO) REFERENCES EMPLEADO (pk_id_empleado) on delete no action on update no action;
  ALTER TABLE CONTROL_EMPLEADO ADD CONSTRAINT fk_CONTROL_EMPLEADO_EMPLEADO1 FOREIGN KEY (fK_idEMPLEADO) REFERENCES EMPLEADO (pk_id_empleado) on delete no action on update no action;
  alter table CONTROLCALIDAD add constraint fk_EMPLEADOS_CONTROLCALIDAD1 foreign key (fk_idresponsable_controlcalidad) references EMPLEADO (pk_id_empleado)on delete no action on update no action; 
  alter table HORAEMPLEADO add constraint fk_HORAEMPLEADO_EMPLEADO foreign key (fk_idempleado_horaempleado)references EMPLEADO (Pk_id_empleado) on delete no action on update no action;
- alter table ENCARGADO_BODEGA add constraint fk_empleado_encargado foreign key(fk_id_empleado) references EMPLEADO(pk_id_empleado)on delete no action on update no action;
- alter table ENVIO_PRODUCTO add constraint fk_envio_empleado foreign key(fk_id_empleado) references EMPLEADO(pk_id_empleado)on delete no action on update no action;
-
  
