@@ -1,79 +1,80 @@
 create database if not exists db_clc;
 use db_clc;
 create table if not exists LOGIN(
-	pk_id_login 					int(10) not null primary key auto_increment,
-    usuario_login 					varchar(45),
-    contraseña_login 				varchar(45),
-    nombreCompleto_login			varchar(100),
-    estado_login					int(2)
+	pk_id_login 						int(10) not null primary key auto_increment,
+    usuario_login 						varchar(45),
+    contraseña_login 					varchar(45),
+    nombreCompleto_login				varchar(100),
+    estado_login						int(2)
 );
--- ------------------------------------
-create table if not exists APLICACION(
-	pk_id_aplicacion int(10)not null auto_increment,
-    fk_id_modulo int(10)not null,
-    nombre_aplicacion varchar(40)not null,
-    descripcion_aplicacion varchar(45)not null,
-    estado_aplicacion int(1)not null,
-    primary key(pk_id_aplicacion),
-    key(pk_id_aplicacion)
-);
+-- --------------------------------------------------------------------------------
 create table if not exists MODULO(
-	pk_id_modulo int(10)not null auto_increment,
-    nombre_modulo varchar(30)not null,
-    descripcion_modulo varchar(50)not null,
-    estado_modulo int(1)not null,
+	pk_id_modulo 						int(10)not null auto_increment,
+    nombre_modulo 						varchar(30)not null,
+    descripcion_modulo 					varchar(50)not null,
+    estado_modulo 						int(1)not null,
     primary key(pk_id_modulo),
     key(pk_id_modulo)
 );
-create table if not exists PERFIL(
-	pk_id_perfil					int(10) not null primary key auto_increment,
-    nombre_perfil					int(10),
-    descripcion_perfil				varchar(50),
-    estado_perfil					int(2)
+create table if not exists APLICACION(
+	pk_id_aplicacion 					int(10)not null auto_increment,
+    fk_id_modulo 						int(10)not null,
+    nombre_aplicacion 					varchar(40)not null,
+    descripcion_aplicacion 				varchar(45)not null,
+    estado_aplicacion 					int(1)not null,
+    primary key(pk_id_aplicacion),
+    key(pk_id_aplicacion)
 );
-create table if not exists APLICACIONPERFIL(
-	pk_id_aplicacionperfil				int(10) not null primary key auto_increment,
-    fk_idaplicacion_aplicacionperfil	int(10),
-    fk_idperfil_aplicacionperfil		int(10),
-    fk_idpermiso_aplicacionperfil		int(10)
+create table if not exists PERFIL(
+	pk_id_perfil						int(10) not null primary key auto_increment,
+    nombre_perfil						varchar(50),
+    descripcion_perfil					varchar(100),
+    estado_perfil						int(2)
+);
+create table if not exists APLICACION_PERFIL(
+	pk_id_aplicacion_perfil				int(10) not null primary key auto_increment,
+    fk_idaplicacion_aplicacion_perfil	int(10),
+    fk_idperfil_aplicacion_perfil		int(10),
+    fk_idpermiso_aplicacion_perfil		int(10)
 );
 -- ------------------------------------
-create table if not exists PERFILUSUARIO(
-	pk_id_perfilusuario				int(10) not null primary key auto_increment,
-    fk_idusuario_perfilusuario		int(10),
-    fk_idperfil_perfilusuario		int(10)
+create table if not exists PERFIL_USUARIO(
+	pk_id_perfil_usuario				int(10) not null primary key auto_increment,
+    fk_idusuario_perfil_usuario			int(10),
+    fk_idperfil_perfil_usuario			int(10)
 );
-create table if not exists APLICACIONUSUARIO(
-	pk_id_aplicacionusuario				int(10) not null primary key auto_increment,
-    fk_idlogin_aplicacionusuario		int(10),
-    fk_idaplicacion_aplicacionusuario	int(10),
-    fk_idpermiso_aplicacionusuario		int(10)
+create table if not exists APLICACION_USUARIO(
+	pk_id_aplicacion_usuario			int(10) not null primary key auto_increment,
+    fk_idlogin_aplicacion_usuario		int(10),
+    fk_idaplicacion_aplicacion_usuario	int(10),
+    fk_idpermiso_aplicacion_usuario		int(10)
 );
 create table if not exists PERMISO(
-	pk_id_permiso				int(10) not null primary key auto_increment,
-    insertar_permiso			boolean,
-    modificar_permiso			boolean,
-    eliminar_permiso			boolean,
-    consultar_permiso			boolean,
-    imprimir_permiso			boolean
+	pk_id_permiso						int(10) not null primary key auto_increment,
+    insertar_permiso					boolean,
+    modificar_permiso					boolean,
+    eliminar_permiso					boolean,
+    consultar_permiso					boolean,
+    imprimir_permiso					boolean
 );
 
 #------BITACORA-----------------------------------------
 create table if not exists BITACORA(
-	pk_id_bitacora					int(10) not null primary key auto_increment, #pk
-    fk_idusuario_bitacora			int(10),
-    fk_idaplicacion_bitacora		int(10),
-    fechahora_bitacora				varchar(50),
-    direccionhost_bitacora			varchar(20),
-    nombrehost_bitacora				varchar(20),
-    accion_bitacora					varchar(50)
+	pk_id_bitacora						int(10) not null primary key auto_increment, #pk
+    fk_idusuario_bitacora				int(10),
+    fk_idaplicacion_bitacora			int(10),
+    fechahora_bitacora					varchar(50),
+    direccionhost_bitacora				varchar(20),
+    nombrehost_bitacora					varchar(20),
+    accion_bitacora						varchar(250)
 );
-CREATE TABLE IF NOT EXISTS DETALLEBITACORA (
-    pk_id_detallebitacora INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    fk_idbitacora_detallebitacora INT(10),
-    querryantigua_detallebitacora VARCHAR(50),
-    querrynueva_detallebitacora VARCHAR(50)
+CREATE TABLE IF NOT EXISTS DETALLE_BITACORA (
+    pk_id_detalle_bitacora 				INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    fk_idbitacora_detalle_bitacora 		INT(10),
+    querryantigua_detalle_bitacora 		VARCHAR(50),
+    querrynueva_detalle_bitacora 		VARCHAR(50)
 );
+
 
 #-------REPORTEADOR-------------------------------------
 create table if not exists REPORTE(
@@ -872,25 +873,27 @@ alter table REPORTE_MODULO add constraint fk_reporte_de_modulo_reportes foreign 
 alter table REPORTE_APLICATIVO add constraint fk_reporte_aplicativo_reporte foreign key(fk_id_reporte) references REPORTE(pk_id_reporte);
 alter table REPORTE_APLICATIVO add constraint fk_reporte_aplicativo_modulo foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
 alter table REPORTE_APLICATIVO add constraint fk_report_aplicativo foreign key(fk_id_aplicacion) references APLICACION(pk_id_aplicacion);
-alter table APLICACION add constraint fk_aplicativo_modulo foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
+
+
 #-------OBJETO CONSULTAS INTELIGENTES--------------------------------------------- 
 alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_empleado_detalle_consulta_inteligente FOREIGN KEY (fk_id_empleado_detalle_consulta_inteligente) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
 alter table DETALLE_CONSULTA_INTELIGENTE add CONSTRAINT fk_consulta_detalle_consulta_inteligente FOREIGN KEY (fk_id_consulta_detalle_consulta_inteligente) REFERENCES CONSULTA_INTELIGENTE (pk_id_consulta_inteligente) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 #-------OBJETO SEGURIDAD---------------------------------------------------------- 
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_aplicacion foreign key (fk_idaplicacion_aplicacionperfil) references APLICACION(pk_id_aplicacion)on delete restrict on update cascade;
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_perfil foreign key (fk_idperfil_aplicacionperfil) references PERFIL(pk_id_perfil)on delete restrict on update cascade;
-alter table APLICACIONPERFIL add constraint fk_aplicacionperfil_permiso foreign key (fk_idpermiso_aplicacionperfil) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
-alter table PERFILUSUARIO add constraint fk_perfil_usuario_login foreign key(fk_idusuario_perfilusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
-alter table PERFILUSUARIO add constraint fk_perfil_usuario_perfil foreign key (fk_idperfil_perfilusuario) references PERFIL(pk_id_perfil) on delete restrict on update cascade;
+alter table APLICACION_PERFIL add constraint fk_aplicacionperfil_aplicacion foreign key (fk_idaplicacion_aplicacion_perfil) references APLICACION(pk_id_aplicacion)on delete restrict on update cascade;
+alter table APLICACION_PERFIL add constraint fk_aplicacionperfil_perfil foreign key (fk_idperfil_aplicacion_perfil) references PERFIL(pk_id_perfil)on delete restrict on update cascade;
+alter table APLICACION_PERFIL add constraint fk_aplicacionperfil_permiso foreign key (fk_idpermiso_aplicacion_perfil) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
+alter table PERFIL_USUARIO add constraint fk_perfil_usuario_login foreign key(fk_idusuario_perfil_usuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
+alter table PERFIL_USUARIO add constraint fk_perfil_usuario_perfil foreign key (fk_idperfil_perfil_usuario) references PERFIL(pk_id_perfil) on delete restrict on update cascade;
 
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_login foreign key(fk_idlogin_aplicacionusuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_aplicacion foreign key (fk_idaplicacion_aplicacionusuario) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
-alter table APLICACIONUSUARIO add constraint fk_aplicacionusuario_permiso foreign key(fk_idpermiso_aplicacionusuario) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
+alter table APLICACION_USUARIO add constraint fk_aplicacionusuario_login foreign key(fk_idlogin_aplicacion_usuario) references LOGIN(pk_id_login) on delete restrict on update cascade;
+alter table APLICACION_USUARIO add constraint fk_aplicacionusuario_aplicacion foreign key (fk_idaplicacion_aplicacion_usuario) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
+alter table APLICACION_USUARIO add constraint fk_aplicacionusuario_permiso foreign key(fk_idpermiso_aplicacion_usuario) references PERMISO (pk_id_permiso)on delete restrict on update cascade;
 
 alter table BITACORA add constraint fk_login_bitacora foreign key (fk_idusuario_bitacora) references LOGIN (pk_id_login) on delete restrict on update cascade;
 alter table BITACORA add constraint fk_aplicacion_bitacora foreign key (fk_idaplicacion_bitacora) references APLICACION(pk_id_aplicacion) on delete restrict on update cascade;
-alter table DETALLEBITACORA add constraint fk_bitacora_detallebitacora foreign key(fk_idbitacora_detallebitacora) references BITACORA(pk_id_bitacora) on delete restrict on update cascade;
+alter table DETALLE_BITACORA add constraint fk_bitacora_detallebitacora foreign key(fk_idbitacora_detalle_bitacora) references BITACORA(pk_id_bitacora) on delete restrict on update cascade;
+alter table APLICACION add constraint fk_aplicativo_modulo foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
 
 #-------ALTER TABLE CRM---------------------------------------------  
 ALTER TABLE PRODUCTO ADD CONSTRAINT fk_producto_categoriatamaño1 FOREIGN KEY (fk_idcategoriatamaño) REFERENCES CATEGORIA_TAMAÑO (pk_idcategoriatamaño) on delete no action on update no action;
