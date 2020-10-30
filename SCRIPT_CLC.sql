@@ -98,17 +98,17 @@ alter table DETALLE_BITACORA add constraint fk_bitacora_detallebitacora foreign 
 
 #REPORTEADOR---------------------------------------------------------------------------------------
 create table if not exists REPORTE(
-	pk_id_reporte int(10)not null auto_increment,
-    nombre_reporte varchar(40)not null,
-    ruta_reporte varchar(100)not null,
-    estado_reporte int(1)not null,
+	pk_id_reporte 						int(10)not null auto_increment,
+    nombre_reporte 						varchar(40)not null,
+    ruta_reporte 						varchar(100)not null,
+    estado_reporte 						int(1)not null,
     primary key(pk_id_reporte),
     key(pk_id_reporte)
 );
 create table if not exists REPORTE_MODULO(
-	fk_id_reporte int(10)not null ,
-    fk_id_modulo int(10)not null,
-    estado_reporte_modulo int(1)not null,
+	fk_id_reporte 						int(10)not null ,
+    fk_id_modulo 						int(10)not null,
+    estado_reporte_modulo 				int(1)not null,
     primary key(fk_id_reporte,fk_id_modulo),
     key(fk_id_reporte,fk_id_modulo)
 );
@@ -116,10 +116,10 @@ alter table REPORTE_MODULO add constraint fk_reporte_de_modulo foreign key(fk_id
 alter table REPORTE_MODULO add constraint fk_reporte_de_modulo_reportes foreign key(fk_id_modulo) references MODULO(pk_id_modulo);
 
 create table if not exists REPORTE_APLICATIVO(
-	fk_id_reporte int(10)not null,
-    fk_id_aplicacion int(10)not null,
-    fk_id_modulo int(10)not null,
-    estado_reporte_aplicativo int(1)not null,
+	fk_id_reporte 						int(10)not null,
+    fk_id_aplicacion 					int(10)not null,
+    fk_id_modulo 						int(10)not null,
+    estado_reporte_aplicativo 			int(1)not null,
     primary key(fk_id_reporte,fk_id_aplicacion,fk_id_modulo),
     key(fk_id_reporte,fk_id_aplicacion,fk_id_modulo)
 );
@@ -390,6 +390,29 @@ alter table ENTREVISTA add constraint fk_empleado_entrevista foreign key (fk_id_
 alter table ENTREVISTA add constraint fk_reclutamiento_entrevista foreign key (fk_id_reclutamiento_entrevista) references RECLUTAMIENTO (pk_id_reclutamiento) on delete restrict on update cascade;
 alter table ENTREVISTA add constraint fk_tipo_entrevista foreign key (fk_id_tipo_entrevista) references TIPO_ENTREVISTA (pk_id_tipo_entrevista) on delete restrict on update cascade;
 
+CREATE TABLE IF NOT EXISTS CONTROL_ASISTENCIA (
+  pk_id_control_asistencia 							INT NOT NULL,
+  fk_id_control_asistencia_empleado 				INT NULL,
+  fk_id_control_asistencia_encabezado_nomina		INT NULL,
+  dias_laborados 									INT NULL,
+  dias_ausente_justificados							INT NULL, 
+  dias_ausente_injustificados						INT NULL,
+  PRIMARY KEY (pk_id_control_asistencia)
+);
+alter table CONTROL_ASISTENCIA add CONSTRAINT fk_control_asistencia_empleado FOREIGN KEY (fk_id_control_asistencia_empleado) REFERENCES EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
+alter table CONTROL_ASISTENCIA add CONSTRAINT fk_control_asistencia_encabezado_nomina FOREIGN KEY (fk_id_control_asistencia_encabezado_nomina) REFERENCES ENCABEZADO_NOMINA (pk_id_encabezado_nomina) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+CREATE TABLE IF NOT EXISTS CONTROL_HORAS (
+  pk_id_control_horas								INT NOT NULL,
+  fk_id_control_horas_empleado 						INT NULL,
+  fk_id_control_horas_encabezado_nomina				INT NULL,
+  horas_hordinarias									DOUBLE NULL,
+  horas_extra										DOUBLE NULL, 
+  PRIMARY KEY (pk_id_control_horas)
+);
+alter table CONTROL_HORAS add CONSTRAINT fk_control_horas_empleado FOREIGN KEY (fk_id_control_horas_empleado) REFERENCES EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
+alter table CONTROL_HORAS add CONSTRAINT fk_control_horas_encabezado_nomina FOREIGN KEY (fk_id_control_horas_encabezado_nomina) REFERENCES ENCABEZADO_NOMINA (pk_id_encabezado_nomina) ON DELETE RESTRICT ON UPDATE CASCADE;
+
 ###FRM---------------------------------------------------------------------------------------------
 create table if not exists BANCO (
 pk_id_banco 						int(11) NOT NULL,
@@ -439,7 +462,7 @@ create table if not exists CUENTA_CONTABLE(
 pk_id_cuenta_contable 				int(11) not null,
 nombre_cuenta_contable 				varchar(75),
 nivel_cuenta_contable 				int(11) ,
-fk_cuenta_padre_cuenta_contable 	int(11) NOT NULL,
+fk_cuenta_padre_cuenta_contable 	int(11),
 saldo_anterior_cuenta_contable 		double ,
 saldo_actual_cuenta_contable 		double ,
 cargo_mes_cuenta_contable 			double ,
@@ -478,7 +501,9 @@ alter table TRANSACCION add constraint fk_transaccion_tipo_transaccion foreign k
 create table if not exists SALDO_HISTORICO (
 pk_id_cuenta_contable 				int(11) not null,
 pk_fecha_saldo_historico 			datetime not null,
-monto_saldo_historico 				double
+monto_saldo_historico 				double,
+cargo_saldo_hostorico 				double,
+abono_saldo_historico				double
 );
 alter table SALDO_HISTORICO add primary key (pk_id_cuenta_contable, pk_fecha_saldo_historico);
 alter table SALDO_HISTORICO add constraint fk_saldo_cuenta_contable foreign key (pk_id_cuenta_contable) references CUENTA_CONTABLE (pk_id_cuenta_contable)on delete no action on update no action;
@@ -644,6 +669,7 @@ create table TELEFONO_PROVEEDOR(
 	pk_id_telefono_proveedor int(10)not null auto_increment,
     fk_id_proveedor int(10)not null,
     telefono_telefono_proveedor varchar(20)not null,
+    estado_telefono_proveedor int(1)not null,
     primary key(pk_id_telefono_proveedor),
     key(pk_id_telefono_proveedor)
 );
@@ -653,6 +679,7 @@ create table CORREO_PROVEEDOR(
 	pk_id_correo_proveedor int(10)not null auto_increment,
     fk_id_proveedor int(10)not null,
     correo_correo_proveedor varchar(50)not null,
+    estado_correo_proveedor int(1)not null,
     primary key(pk_id_correo_proveedor),
     key(pk_id_correo_proveedor)
 );
@@ -1045,7 +1072,7 @@ alter table ENCARGADO_BODEGA add constraint fk_empleado_encargado foreign key(fk
 ####RELACIONES-MRP---------------------------------------------------------------------------------
 alter table CONTROL_CALIDAD add constraint fk_EMPLEADOS_CONTROLCALIDAD1 foreign key (fk_id_responsable_control_calidad) references EMPLEADO (pk_id_empleado)on delete no action on update no action; 
 alter table HORA_EMPLEADO add constraint fk_HORAEMPLEADO_EMPLEADO foreign key (fk_id_empleado_hora_empleado)references EMPLEADO (pk_id_empleado) on delete no action on update no action;
- 
+
 ####RELACIONES-CRM---------------------------------------------------------------------------------
 alter table FACTURA add constraint fk_TBL_FACTURA_EMPLEADO1 foreign key (fK_id_empleado_factura)references EMPLEADO (pk_id_empleado)on delete no action on update no action;
 alter table CONTROL_EMPLEADO add constraint fk_TBL_CONTROL_EMPLEADO_EMPLEADO1 foreign key (fK_id_empleado_controlempleado)references EMPLEADO (pk_id_empleado)on delete no action on update no action;
