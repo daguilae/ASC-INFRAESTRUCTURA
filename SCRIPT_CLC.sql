@@ -698,6 +698,7 @@ alter table ENCARGADO_BODEGA add constraint fk_empleado_bodega foreign key(fk_id
 create table COMPRA_ENCABEZADO(
 	pk_id_compra_encabezado int(10)not null,
     fk_id_proveedor int(10)not null,
+    estado_proceso_encabezado_compra int(1)not null,
     fec_compra_encabezado_compra datetime not null,
     total_compra_encabezado_compra double(12,2) not null,
     estado_encabezado_compra int(1)not null,
@@ -736,6 +737,7 @@ alter table FABRICA add constraint fk_fabrica_municipio foreign key(fk_id_munici
 create table PEDIDO_ENCABEZADO(
 	pk_id_pedido_encabezado int(10)not null,
     fk_id_fabrica int(10)not null,
+    estado_proceso_pedido_encabezado int(1)not null,
     fec_pedido_pedido_encabezado datetime not null,
     total_pedido_encabezado double(12,2) not null,
     estado_pedido_encabezado int(1)not null,
@@ -792,6 +794,7 @@ create table TIPO_MOVIMIENTO(
 	pk_id_tipo_movimiento int(10)not null,
     nombre_tipo_movimiento varchar(45)not null,
     signo_tipo_movimiento varchar(1),
+    estado_tipo_movimiento int(1)not null,
 	primary key(pk_id_tipo_movimiento),
     key(pk_id_tipo_movimiento)
 );
