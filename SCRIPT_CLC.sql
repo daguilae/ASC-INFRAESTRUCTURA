@@ -828,7 +828,8 @@ alter table MOVIMIENTO_INVENTARIO_DETALLE add constraint fk_mov_inventario_detal
 create table if not exists TIPO_INVENTARIO (
   pk_id_tipo_inventario 					int(10) not null primary key auto_increment,
   nombre_tipo_inventario 					varchar(45) null,
-  descripcion_tipo_inventario 				varchar(45) null
+  descripcion_tipo_inventario 				varchar(45) null,
+  estado_tipo_inventario					tinyint(1) null
   ); 
 create table if not exists ACTIVOS_MRP(
   pk_id_activos_mrp 						int(10) not null primary key auto_increment,
@@ -857,7 +858,7 @@ create table if not exists ORDEN_PRODUCCION (
 );
 alter table ORDEN_PRODUCCION add constraint fk_ORDEN_PRODUCCION_TIPOINVENTARIO foreign key (fk_id_tipo_producto_orden_produccion) references TIPO_INVENTARIO (pk_id_tipo_inventario) on delete no action on update no action;
 
-create table if not exists CONTROL_CALIDAD(#Falta una relacion
+create table if not exists CONTROL_CALIDAD(#Falta una relacion 2.0
   pk_id_control_calidad						int(10) not null primary key auto_increment,
   fk_id_orden_produccion_control_calidad 	int not null,
   fk_id_inventario_control_calidad 			int not null, #porque inventario?
@@ -871,7 +872,8 @@ alter table CONTROL_CALIDAD add constraint fk_CONTROL_CALIDAD_INVENTARIO1 foreig
 create table if not exists ESTADO_PRODUCCION(
   pk_id_estado_produccion 					int(10) not null primary key auto_increment,
   nombre_estado_produccion 					varchar(45) null,
-  duracion_estado_produccion				varchar(45) null
+  duracion_estado_produccion				varchar(45) null,
+  estado_estado_produccion					tinyint(1) null
 );
 create table if not exists CONTROL_PRODUCTO (
   pk_id_control_producto 					int(10) not null primary key auto_increment,
@@ -886,11 +888,20 @@ alter table CONTROL_PRODUCTO add constraint fk_CONTROL_PRODUCTO_ESTADO_PRODUCCIO
 create table if not exists HORA_EMPLEADO (#Falta relacion con empleado
   pk_id_hora_empleado						int(10) not null primary key auto_increment,
   fk_id_empleado_hora_empleado				int(10) null,
-  tiempo_hora_empleado						double null,
-  
-  fk_id_orden_produccion_hora_empleado		int null#porque se necesita orden de produccion?
+  fk_id_orden_produccion_hora_empleado		int null,#porque se necesita orden de produccion?
+  fecha_hora_empleado						date,
+  estado_hora_empleado						tinyint(1)
 );
 alter table HORA_EMPLEADO add constraint fk_HORA_EMPLEADO_ORDEN_PRODUCCION1 foreign key (fk_id_orden_produccion_hora_empleado) references ORDEN_PRODUCCION (pk_id_orden_produccion) on delete no action on update no action;
+
+create table if not exists DETALLE_HORA_EMPLEADO(
+	pk_id_detalle_hora_empleado				int(10) not null primary key auto_increment,
+    fk_id_hora_empleado_detalle				int(10),
+    descripcion_detalle_hora_empleado		varchar(250),
+    tiempo_detalle_hora_empleado			double,
+    estado_detalle_hora_empleado			tinyint(1)
+);
+alter table DETALLE_HORA_EMPLEADO add constraint fk_HORA_EMPLEADO_DETALLE_HORA_EMPLEADO foreign key (fk_id_hora_empleado_detalle) references HORA_EMPLEADO(pk_id_hora_empleado) on delete no action on update no action;
 
 create table if not exists ORDEN_COMPRA(
   pk_id_orden_compra 						int(10) not null primary key auto_increment,
@@ -908,6 +919,7 @@ create table if not exists RECETAS_ENCABEZADO(
 	estado_detalle_receta 						tinyint(1) null
 );
 alter table RECETAS_ENCABEZADO add constraint fk_recetas_encabezado_activos foreign key (fk_id_activos_mrp_receta_encabezado) references ACTIVOS_MRP (pk_id_activos_mrp) on delete no action on update no action;
+
 create table if not exists DETALLE_RECETA(
    pk_id_detalle_detalle_receta 				int(10) not null primary key auto_increment,
    fk_id_receta_encabezado_detalle				int(10),
