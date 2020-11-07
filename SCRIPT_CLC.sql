@@ -918,229 +918,201 @@ alter table PRODUCTO_TERMINADO add constraint fk_producto_terminado_producto for
 
 ###CRM---------------------------------------------------------------------------------------------
 -- -----------------------------------------------------
--- Table `clc_erp`.`CLIENTES` correr desde aca
+-- Table `clc_erp`.`CLIENTES`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS CLIENTES (
-  `pk_id_cliente` INT NOT NULL AUTO_INCREMENT,
-  `nit_cliente` VARCHAR(45) NULL,
-  `fecha` DATETIME NULL,
-  `nombre_cliente` VARCHAR(45) NULL,
-  `apellido_cliente` VARCHAR(45) NULL,
-  `telefono` VARCHAR(45) NULL,
-  `estado` VARCHAR(45) NULL,
-  `correo_cliente` VARCHAR(45) NULL,
-  `direccion_cliente` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_cliente`))
+CREATE TABLE IF NOT EXISTS `CLIENTES` (
+`pk_id_cliente` INT NOT NULL AUTO_INCREMENT,
+`nit_cliente` VARCHAR(45) NULL,
+`fecha` DATETIME NULL,
+`nombre_cliente` VARCHAR(45) NULL,
+`apellido_cliente` VARCHAR(45) NULL,
+`telefono` VARCHAR(45) NULL,
+`estado` VARCHAR(45) NULL,
+`correo_cliente` VARCHAR(45) NULL,
+`direccion_cliente` VARCHAR(45) NULL,
+PRIMARY KEY (`pk_id_cliente`))
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`TIPO_VENTA`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS TIPO_VENTA (
-  `pk_id_tipo_venta` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_tipo_venta`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`SUCURSAL`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS SUCURSAL (
-  `pk_id_sucursal` INT NOT NULL,
-  `nombre_sucursal` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_sucursal`))
-ENGINE = InnoDB;
-
-
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`VENTAS`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS VENTAS (
-  `pk_id_venta` INT NOT NULL AUTO_INCREMENT,
-  `fecha_venta` DATETIME NULL,
-  `cantidad` VARCHAR(45) NULL,
-  `total` VARCHAR(45) NULL,
-  `descuentos_venta` VARCHAR(45) NULL,
-  `total_venta` VARCHAR(45) NULL,
-  `fk_id_tipo_venta` INT NOT NULL,
-  `fk_id_cliente` INT NOT NULL,
-  `fk_id_sucursal` INT NOT NULL,
-  `fk_id_producto` INT NOT NULL,
-  PRIMARY KEY (`pk_id_venta`),
-  INDEX `fk_VENTAS_TIPO_VENTA1_idx` (`fk_id_tipo_venta` ASC)   ,
-  INDEX `fk_VENTAS_CLIENTES1_idx` (`fk_id_cliente` ASC)   ,
-  INDEX `fk_VENTAS_SUCURSAL1_idx` (`fk_id_sucursal` ASC)   ,
-  INDEX `fk_VENTAS_PRODUCTO_SCM1_idx` (`fk_id_producto` ASC)   ,
-  CONSTRAINT `fk_VENTAS_TIPO_VENTA1`
-    FOREIGN KEY (`fk_id_tipo_venta`)
-    REFERENCES TIPO_VENTA (`pk_id_tipo_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_VENTAS_CLIENTES1`
-    FOREIGN KEY (`fk_id_cliente`)
-    REFERENCES CLIENTES (`pk_id_cliente`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_VENTAS_SUCURSAL1`
-    FOREIGN KEY (`fk_id_sucursal`)
-    REFERENCES SUCURSAL (`pk_id_sucursal`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`PEDIDOS_ESPECIALES`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS PEDIDOS_ESPECIALES (
-  `pk_id_pedido` INT NOT NULL AUTO_INCREMENT,
-  `fecha` DATETIME NULL,
-  `nombre_pedido` VARCHAR(45) NULL,
-  `cantidad` VARCHAR(45) NULL,
-  `fk_id_producto` INT NOT NULL,
-  `estado_pedido` VARCHAR(45) NULL,
-  `fk_id_empleado` INT NOT NULL,
-  PRIMARY KEY (`pk_id_pedido`),
-  INDEX `fk_PEDIDOS_ESPECIALES_PRODUCTOS_GRUPO_BILLY_idx` (`fk_id_producto` ASC)   ,
-  INDEX `fk_PEDIDOS_ESPECIALES_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC) )
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `clc_erp`.`CONTROL_EMPLEADO`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS CONTROL_EMPLEADO (
-  `pk_id_control` INT NOT NULL AUTO_INCREMENT,
-  `horas_efectivas_de_trabajo` VARCHAR(45) NULL,
-  `horas_extras_de_trabajo` VARCHAR(45) NULL,
-  `comisiones_ventas` VARCHAR(45) NULL,
-  `VENTAS_pk_id_venta` INT NOT NULL,
-  `fk_id_empleado` INT NOT NULL,
-  PRIMARY KEY (`pk_id_control`),
-  INDEX `fk_CONTROL_EMPLEADO_VENTAS1_idx` (`VENTAS_pk_id_venta` ASC)   ,
-  INDEX `fk_CONTROL_EMPLEADO_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC)   ,
-  CONSTRAINT `fk_CONTROL_EMPLEADO_VENTAS1`
-    FOREIGN KEY (`VENTAS_pk_id_venta`)
-    REFERENCES VENTAS (`pk_id_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE TABLE IF NOT EXISTS `CONTROL_EMPLEADO` (
+`pk_id_control` INT NOT NULL AUTO_INCREMENT,
+`horas_extras_de_trabajo` VARCHAR(45) NULL,
+`comisiones_ventas` VARCHAR(45) NULL,
+`fk_id_venta` INT NOT NULL,
+`fk_id_empleado` INT NOT NULL,
+PRIMARY KEY (`pk_id_control`),
+INDEX `fk_CONTROL_EMPLEADO_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC) ,
+CONSTRAINT `fk_CONTROL_EMPLEADO_EMPLEADOS HRM1`
+FOREIGN KEY (`fk_id_empleado`)
+REFERENCES `EMPLEADO` (`pk_id_empleado`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `clc_erp`.`TIPO_VENTA`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `TIPO_VENTA` (
+`pk_id_tipo_venta` INT NOT NULL AUTO_INCREMENT,
+`nombre` VARCHAR(45) NULL,
+PRIMARY KEY (`pk_id_tipo_venta`))
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
--- Table `clc_erp`.`CUENTAS_POR_COBRAR`
+-- Table `clc_erp`.`TIPO_CUENTA_POR_COBRAR`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS CUENTAS_POR_COBRAR (
-  `pk_id_cuenta` INT NOT NULL AUTO_INCREMENT,
-  `fecha` DATETIME NULL,
-  `concepto` VARCHAR(45) NULL,
-  `dias de credito` VARCHAR(45) NULL,
-  `saldo` FLOAT NULL,
-  `abono` FLOAT NULL,
-  `total` FLOAT NULL,
-  PRIMARY KEY (`pk_id_cuenta`))
+CREATE TABLE IF NOT EXISTS `TIPO_CUENTA_POR_COBRAR` (
+`pk_id_tipo_cuenta` INT NOT NULL AUTO_INCREMENT,
+`nombre_cuenta` VARCHAR(45) NULL,
+PRIMARY KEY (`pk_id_tipo_cuenta`))
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`DETALLES_VENTA_EMPLEADO`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS DETALLES_VENTA_EMPLEADO (
-  `fk_id_venta` INT NOT NULL AUTO_INCREMENT,
-  `fk_id_empleado` INT NOT NULL,
-  PRIMARY KEY (`fk_id_venta`, `fk_id_empleado`),
-  INDEX `fk_VENTAS_has_EMPLEADOS HRM_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC)   ,
-  INDEX `fk_VENTAS_has_EMPLEADOS HRM_VENTAS1_idx` (`fk_id_venta` ASC)   ,
-  CONSTRAINT `fk_VENTAS_has_EMPLEADOS HRM_VENTAS1`
-    FOREIGN KEY (`fk_id_venta`)
-    REFERENCES VENTAS (`pk_id_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `clc_erp`.`ABONOS`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS ABONOS (
-  `fk_id_venta` INT NOT NULL AUTO_INCREMENT,
-  `fk_id_cuenta` INT NOT NULL,
-  `fecha` DATETIME NULL,
-  `saldo` VARCHAR(45) NULL,
-  `abono` VARCHAR(45) NULL,
-  `total` VARCHAR(45) NULL,
-  PRIMARY KEY (`fk_id_venta`, `fk_id_cuenta`),
-  INDEX `fk_VENTAS_has_CUENTAS_POR_COBRAR_CUENTAS_POR_COBRAR1_idx` (`fk_id_cuenta` ASC)   ,
-  INDEX `fk_VENTAS_has_CUENTAS_POR_COBRAR_VENTAS1_idx` (`fk_id_venta` ASC)   ,
-  CONSTRAINT `fk_VENTAS_has_CUENTAS_POR_COBRAR_VENTAS1`
-    FOREIGN KEY (`fk_id_venta`)
-    REFERENCES VENTAS (`pk_id_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_VENTAS_has_CUENTAS_POR_COBRAR_CUENTAS_POR_COBRAR1`
-    FOREIGN KEY (`fk_id_cuenta`)
-    REFERENCES CUENTAS_POR_COBRAR (`pk_id_cuenta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `clc_erp`.`FACTURAS`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS FACTURAS (
-  `pk_id_factura` INT NOT NULL AUTO_INCREMENT,
-  `numero_serie` VARCHAR(45) NULL,
-  `fecha_factura` DATETIME NULL,
-  `total_factura` VARCHAR(45) NULL,
-  `estado_factura` VARCHAR(45) NULL,
-  `fk_id_tipo_venta` INT NOT NULL,
-  `fk_id_cliente` INT NOT NULL,
-  PRIMARY KEY (`pk_id_factura`),
-  INDEX `fk_FACTURAS_TIPO_VENTA1_idx` (`fk_id_tipo_venta` ASC)   ,
-  INDEX `fk_FACTURAS_CLIENTES1_idx` (`fk_id_cliente` ASC)   ,
-  CONSTRAINT `fk_FACTURAS_TIPO_VENTA1`
-    FOREIGN KEY (`fk_id_tipo_venta`)
-    REFERENCES TIPO_VENTA (`pk_id_tipo_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_FACTURAS_CLIENTES1`
-    FOREIGN KEY (`fk_id_cliente`)
-    REFERENCES CLIENTES (`pk_id_cliente`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE TABLE IF NOT EXISTS `FACTURAS` (
+`pk_id_factura` INT NOT NULL AUTO_INCREMENT,
+`fk_id_empleado` INT NOT NULL,
+`fk_id_cliente` INT NOT NULL,
+`fk_id_tipo_venta` INT NOT NULL,
+`fecha_factura` DATETIME NULL,
+`total_factura` VARCHAR(45) NULL,
+PRIMARY KEY (`pk_id_factura`),
+INDEX `fk_FACTURAS_TIPO_VENTA1_idx` (`fk_id_tipo_venta` ASC) ,
+INDEX `fk_FACTURAS_CLIENTES1_idx` (`fk_id_cliente` ASC) ,
+INDEX `fk_FACTURAS_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC) ,
+CONSTRAINT `fk_FACTURAS_TIPO_VENTA1`
+FOREIGN KEY (`fk_id_tipo_venta`)
+REFERENCES `TIPO_VENTA` (`pk_id_tipo_venta`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_FACTURAS_CLIENTES1`
+FOREIGN KEY (`fk_id_cliente`)
+REFERENCES `CLIENTES` (`pk_id_cliente`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_FACTURAS_EMPLEADO`
+FOREIGN KEY (`fk_id_empleado`)
+REFERENCES `EMPLEADO` (`pk_id_empleado`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `clc_erp`.`MOVIMIENTO_CUENTA_POR_COBRAR`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MOVIMIENTO_CUENTA_POR_COBRAR` (
+`pk_id_movimiento_cuenta` INT NOT NULL AUTO_INCREMENT,
+`fecha` DATETIME NULL,
+`fk_id_tipo_cuenta` INT NOT NULL,
+`fk_id_cliente` INT NOT NULL,
+`fk_id_factura` INT NOT NULL,
+`saldo_cuenta` FLOAT NULL,
+PRIMARY KEY (`pk_id_movimiento_cuenta`),
+INDEX `fk_MOVIMIENTO_CUENTA_POR_COBRAR_CLIENTES1_idx` (`fk_id_cliente` ASC) ,
+INDEX `fk_MOVIMIENTO_CUENTA_POR_COBRAR_TIPO_CUENTA_POR_COBRAR1_idx` (`fk_id_tipo_cuenta` ASC) ,
+INDEX `fk_MOVIMIENTO_CUENTA_POR_COBRAR_FACTURAS1_idx` (`fk_id_factura` ASC) ,
+CONSTRAINT `fk_MOVIMIENTO_CUENTA_POR_COBRAR_CLIENTES1`
+FOREIGN KEY (`fk_id_cliente`)
+REFERENCES `CLIENTES` (`pk_id_cliente`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_MOVIMIENTO_CUENTA_POR_COBRAR_TIPO_CUENTA_POR_COBRAR1`
+FOREIGN KEY (`fk_id_tipo_cuenta`)
+REFERENCES `TIPO_CUENTA_POR_COBRAR` (`pk_id_tipo_cuenta`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_MOVIMIENTO_CUENTA_POR_COBRAR_FACTURAS1`
+FOREIGN KEY (`fk_id_factura`)
+REFERENCES `FACTURAS` (`pk_id_factura`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `clc_erp`.`DETALLES_VENTA_EMPLEADO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `DETALLES_VENTA_EMPLEADO` (
+`fk_id_venta` INT NOT NULL AUTO_INCREMENT,
+`fk_id_empleado` INT NOT NULL,
+PRIMARY KEY (`fk_id_venta`, `fk_id_empleado`),
+INDEX `fk_VENTAS_has_EMPLEADOS HRM_EMPLEADOS HRM1_idx` (`fk_id_empleado` ASC) ,
+CONSTRAINT `fk_VENTAS_has_EMPLEADOS HRM_EMPLEADOS HRM1`
+FOREIGN KEY (`fk_id_empleado`)
+REFERENCES `EMPLEADO` (`pk_id_empleado`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `clc_erp`.`DETALLE_FACTURA`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS DETALLE_FACTURA (
-  `fk_id_venta` INT NOT NULL,
-  `fk_id_factura` INT NOT NULL,
-  `cantidad` INT NULL,
-  `descuento` FLOAT NULL,
-  `subtotal` FLOAT NULL,
-  `estado` VARCHAR(45) NULL,
-  PRIMARY KEY (`fk_id_venta`, `fk_id_factura`),
-  INDEX `fk_VENTAS_has_FACTURAS_FACTURAS1_idx` (`fk_id_factura` ASC)   ,
-  INDEX `fk_VENTAS_has_FACTURAS_VENTAS1_idx` (`fk_id_venta` ASC)   ,
-  CONSTRAINT `fk_VENTAS_has_FACTURAS_VENTAS1`
-    FOREIGN KEY (`fk_id_venta`)
-    REFERENCES VENTAS (`pk_id_venta`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_VENTAS_has_FACTURAS_FACTURAS1`
-    FOREIGN KEY (`fk_id_factura`)
-    REFERENCES FACTURAS (`pk_id_factura`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE TABLE IF NOT EXISTS `DETALLE_FACTURA` (
+`fk_id_factura` INT NOT NULL,
+`fk_id_producto` INT NOT NULL,
+`DETALLE_FACTURAcol` VARCHAR(45) NULL,
+`cantidad` INT NULL,
+`descuento` FLOAT NULL,
+`subtotal` FLOAT NULL,
+`sub_total_descuento` FLOAT NULL,
+PRIMARY KEY (`fk_id_factura`),
+INDEX `fk_VENTAS_has_FACTURAS_FACTURAS1_idx` (`fk_id_factura` ASC) ,
+INDEX `fk_DETALLE_FACTURA_PRODUCTO_SCM1_idx` (`fk_id_producto` ASC) ,
+CONSTRAINT `fk_VENTAS_has_FACTURAS_FACTURAS1`
+FOREIGN KEY (`fk_id_factura`)
+REFERENCES `FACTURAS` (`pk_id_factura`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_DETALLE_FACTURA_PRODUCTO_SCM1`
+FOREIGN KEY (`fk_id_producto`)
+REFERENCES `PRODUCTO` (`pk_id_producto`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `clc_erp`.`COTIZACION`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `COTIZACION` (
+`pk_id_cotizacion` INT NOT NULL AUTO_INCREMENT,
+`fk_id_cliente` INT NOT NULL,
+`fecha_cotizacion` DATE NULL,
+`total_cotizacion` VARCHAR(45) NULL,
+`estado_cotizacion` VARCHAR(45) NULL,
+PRIMARY KEY (`pk_id_cotizacion`),
+INDEX `fk_COTIZACION_CLIENTES1_idx` (`fk_id_cliente` ASC) ,
+CONSTRAINT `fk_COTIZACION_CLIENTES1`
+FOREIGN KEY (`fk_id_cliente`)
+REFERENCES `CLIENTES` (`pk_id_cliente`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `clc_erp`.`DETALLE_COTIZACION`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `DETALLE_COTIZACION` (
+`fk_id_cotizacion` INT NOT NULL,
+`fk_id_producto` INT NOT NULL,
+`cantidad_producto` INT NULL,
+`precio_producto` FLOAT NULL,
+`subtotal_producto` FLOAT NULL,
+`descuento_producto` FLOAT NULL,
+`subtotal_descuento` FLOAT NULL,
+PRIMARY KEY (`fk_id_cotizacion`, `fk_id_producto`),
+INDEX `fk_COTIZACION_has_PRODUCTO_SCM_PRODUCTO_SCM1_idx` (`fk_id_producto` ASC) ,
+INDEX `fk_COTIZACION_has_PRODUCTO_SCM_COTIZACION1_idx` (`fk_id_cotizacion` ASC) ,
+CONSTRAINT `fk_COTIZACION_has_PRODUCTO_SCM_COTIZACION1`
+FOREIGN KEY (`fk_id_cotizacion`)
+REFERENCES `COTIZACION` (`pk_id_cotizacion`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT `fk_COTIZACION_has_PRODUCTO_SCM_PRODUCTO_SCM1`
+FOREIGN KEY (`fk_id_producto`)
+REFERENCES `PRODUCTO` (`pk_id_producto`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 #####RELACIONES-ENTRE-MODULOS----------------------------------------------------------------------
 ####RELACIONES-HRM---------------------------------------------------------------------------------
@@ -1153,10 +1125,10 @@ alter table ENCARGADO_BODEGA add constraint fk_empleado_encargado foreign key(fk
 alter table HORA_EMPLEADO add constraint fk_HORAEMPLEADO_EMPLEADO foreign key (fk_id_empleado_hora_empleado)references EMPLEADO (pk_id_empleado) on delete no action on update no action;
 
 ####RELACIONES-CRM---------------------------------------------------------------------------------
-alter table VENTAS add constraint fk_VENTAS_PRODUCTO_SCM1 foreign key (fk_id_producto) references PRODUCTO(pk_id_producto) on delete no action on update no action;
-alter table DETALLES_VENTA_EMPLEADO add constraint `fk_VENTAS_has_EMPLEADOS HRM_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-alter table control_empleado add CONSTRAINT `fk_CONTROL_EMPLEADO_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-alter table pedidos_especiales add CONSTRAINT `fk_PEDIDOS_ESPECIALES_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+#alter table VENTAS add constraint fk_VENTAS_PRODUCTO_SCM1 foreign key (fk_id_producto) references PRODUCTO(pk_id_producto) on delete no action on update no action;
+#alter table DETALLES_VENTA_EMPLEADO add constraint `fk_VENTAS_has_EMPLEADOS HRM_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+#alter table control_empleado add CONSTRAINT `fk_CONTROL_EMPLEADO_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+#alter table pedidos_especiales add CONSTRAINT `fk_PEDIDOS_ESPECIALES_EMPLEADOS HRM1` FOREIGN KEY (`fk_id_empleado`) REFERENCES EMPLEADO (`pk_id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ######ALTER-TABLES-RELACIONALES--------------------------------------------------------------------
 #####ALTER-TABLES-MODULOS--------------------------------------------------------------------------
@@ -1167,3 +1139,40 @@ ALTER TABLE CURSO ADD `detalle_curso` VARCHAR(128) NULL DEFAULT NULL AFTER `fk_i
 ALTER TABLE CURSO ADD CONSTRAINT fk_empleado_curso FOREIGN KEY (fk_id_empleado_curso) REFERENCES EMPLEADO (pk_id_empleado) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE ENCABEZADO_CAPACITACION ADD `horas_encabezado_capacitacion` INT(2) NOT NULL AFTER `fk_id_curso_encabezado_capacitacion`;
 ALTER TABLE ENCABEZADO_CAPACITACION DROP `nombre_encabezado_capacitacion`;
+######DATOS--------------------------------------------------------------------
+######SEGURIDAD--------------------------------------------------------------------
+INSERT INTO login VALUES (1,'sistema','bi0PL96rbxVRPKJQsLJJAg==','Usuario de prueba',1),(2,'bjsican','0FOYy5u5h0djKjzCYqfvkg==','Billy Sican',1),
+(3,'bmaza','xTfsC3/XR/CVyDvNr1Fs+g==','Bryan Mazariegos',1),(4,'jsican','jsican','Jeshua Sican',0),(5,'jmorataya','123','Julio Morataya',0);
+
+INSERT INTO `modulo` VALUES (1,'Seguridad','Aplicaciones de seguridad',1),(2,'Consultas','Consultas Inteligentes',1),
+(3,'Reporteador','Aplicaciones de Reporteador',1),(4,'HRM','Aplicaciones de Recursos Humanos',1),
+(5,'FRM','Aplicaciones de Finanzas',1),(6,'SCM','Aplicaciones Control de Inventario',1),(7,'MRP','Aplicaciones de Produccion',1),
+(8,'CRM','Aplicaciones de Ventas',1);
+
+INSERT INTO perfil VALUES (1,'Admin','Administracion del programa',1),(2,'Sistema','Administrador del sistema',1),
+(3,'Digitador','Digitador para Cuentas',1),(4,'Consultor','Unicamente consultas ',1),(5,'Reportes','Ingreso y consultas de reportes',1),(6,'Pruebas','pruebas',1);
+
+INSERT INTO aplicacion VALUES (1,1,'Login','Ventana de Ingreso',1),
+(2,1,'Mantenimiento Usuario','Mantenimientos de usuario',1),
+(3,1,'Mantenimiento Aplicacion','ABC de las Aplicaciones',1),
+(4,1,'Mantenimiento Perfil','ABC de perfiles',1),
+(5,1,'Asignacion de Aplicaciones a Perfil','Asignacion Aplicacion y perfil',1),
+(6,1,'Asignacaion de Aplicaciones','Asignacion especificas a un usuario',1),
+(7,1,'Consulta Aplicacion','Mantenimiento de Aplicaciones',1),
+(8,1,'Agregar Modulo','Mantenimientos de Modulos',1),
+(9,1,'Consultar Perfil','Consultas de perfiles disponibles',1),
+(10,1,'Permisos','Asignar permisos a perfiles y aplicaciones',1),
+(11,1,'Bitacora','Guarda todos los movimientos',1);
+
+INSERT INTO permiso VALUES (1,1,1,1,1,1),(2,1,0,0,1,1),(3,1,1,1,0,0),(4,1,1,1,1,1),(5,1,1,1,1,1),(6,1,1,1,1,1),(7,1,1,1,1,1),
+(8,1,0,1,0,0),(9,1,1,0,0,0),(10,1,1,0,0,0),(11,1,1,1,1,1),(12,0,0,0,1,0),(13,0,0,0,1,0),(14,0,0,0,0,0),(15,1,0,0,1,0),(16,0,0,0,0,0),(17,1,1,0,0,0);
+
+INSERT INTO aplicacion_perfil VALUES (1,1,1,1),
+(2,4,1,2),(3,5,1,3),(4,2,1,4),(5,3,1,5),(6,6,1,6),
+(7,8,1,7),(8,2,3,8),(9,3,3,9),(10,4,3,11),(11,2,4,12),(12,8,4,13),(13,8,5,15);
+
+INSERT INTO aplicacion_usuario VALUES (1,1,4,1),(2,1,5,2),(3,1,6,3),(4,3,8,10),(5,4,6,14),(6,5,5,16),(7,5,2,17);
+
+
+INSERT INTO perfil_usuario VALUES (1,1,1),(2,3,3),(4,4,1),(5,5,5);
+
