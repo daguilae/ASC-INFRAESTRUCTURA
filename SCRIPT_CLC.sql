@@ -166,45 +166,47 @@ create table if not exists DEPARTAMENTO_EMPRESARIAL (
   primary key (pk_id__departamento_empresarial)
 );
 create table if not exists EMPLEADO (
-  pk_id_empleado 								int not null,
-  nombre1_empleado 								varchar(45) null,
-  nombre2_empleado 								varchar(45) null,
-  apellido1_empleado 							varchar(45) null,
-  apellido2_empleado 							varchar(45) null,
-  fecha_nacimiento_empleado 					varchar(10) null,
-  dpi_empleado 									int null,
-  fk_id_genero_empleado 						int null,
-  fk_id_estado_civil_empleado 					int null,
-  email_empleado 								varchar(125) null,
-  telefono_empleado 							int null,
-  numero_iggs_empleado							int null,
-  fk_id_licencia_conducir_empleado 				int null,
-  fk_id_puesto_empleado 						int null,
-  cuenta_bancaria_empleado 						int null,
-  fk_id_departamento_empresarial_empleado 		int null,
-  estado_empleado 								int null,
-  primary key (pk_id_empleado)
+	pk_id_empleado 							int not null,
+	nombre1_empleado 						varchar(45) null,
+	nombre2_empleado 						varchar(45) null,
+	apellido1_empleado 						varchar(45) null,
+	apellido2_empleado						varchar(45) null,
+	fecha_nacimiento_empleado 				varchar(10) null,
+	dpi_empleado 							int(15) null,
+	fk_id_genero_empleado 					int null,
+	fk_id_estado_civil_empleado 			int null,
+	email_empleado 							varchar(125) null,
+	telefono_empleado 						int null,
+	numero_iggs_empleado 					int null,
+	fk_id_licencia_conducir_empleado 		int null,
+	fk_id_puesto_empleado 					int null,
+	fk_id_horario_empleado 					int null,
+	cuenta_bancaria_empleado 				int null,
+	fk_id_departamento_empresarial_empleado int null,
+	estado_empleado 						varchar(25) null,
+	primary key (pk_id_empleado)
 );
 alter table EMPLEADO add constraint fk_genero_empleado1 foreign key (fk_id_genero_empleado) references GENERO(pk_id_genero) on delete restrict on update cascade;
-alter table EMPLEADO add constraint fk_estado_civil_empleado foreign key (fk_id_estado_civil_empleado) references ESTADO_CIVIL (pk_id_estado_civil) on delete restrict on update cascade; 
+alter table EMPLEADO add constraint fk_estado_civil_empleado foreign key (fk_id_estado_civil_empleado) references ESTADO_CIVIL (pk_id_estado_civil) on delete restrict on update cascade;
 alter table EMPLEADO add constraint fk_licencia_conducir_empleado foreign key (fk_id_licencia_conducir_empleado) references LICENCIA_CONDUCCION (pk_id_licencia_conduccion) on delete restrict on update cascade;
-alter table EMPLEADO add constraint fk_puesto_empleado foreign key (fk_id_puesto_empleado) references PUESTO (pk_id_puesto) on delete restrict on update cascade; 
-alter table EMPLEADO add constraint fk_departamento_empresarial_empleado foreign key (fk_id_departamento_empresarial_empleado) references DEPARTAMENTO_EMPRESARIAL (pk_id__departamento_empresarial) on delete restrict on update cascade; 
+alter table EMPLEADO add constraint fk_puesto_empleado foreign key (fk_id_puesto_empleado) references PUESTO (pk_id_puesto) on delete restrict on update cascade;
+alter table EMPLEADO add constraint fk_departamento_empresarial_empleado foreign key (fk_id_departamento_empresarial_empleado) references DEPARTAMENTO_EMPRESARIAL (pk_id__departamento_empresarial) on delete restrict on update cascade;
+alter table EMPLEADO add constraint fk_horario_empleado foreign key (fk_id_horario_empleado) references HORARIO (pk_id_horario) on delete restrict on update cascade;
 
 create table if not exists TIPO_BAJA(
 	pk_id_tipo_baja								int not null,
     nombre_tipo_baja							varchar(10),
     primary key(pk_id_tipo_baja)
 );
-create table if not exists BAJA(
-	pk_id_baja									int not null,
-    fk_id_empleado_baja							int null,
-    fk_id_tipo_baja								int null,
-    prestaciones_baja							double null,
-    tiempo_laborado_baja						int null,
-    fecha_despido_baja							varchar(10),
-    causa_bajas							varchar(200),
-    primary key(pk_id_baja)
+create table if not exists BAJA( 
+	pk_id_baja 					int not null, 
+	fk_id_empleado_baja 		int null, 
+	fk_id_tipo_baja 			int null, 
+	prestaciones_baja 			double null, 
+	tiempo_laborado_baja 		varchar (200) null, 
+	fecha_despido_baja 			varchar(10), 
+	causa_bajas 				varchar(200), 
+	primary key(pk_id_baja) 
 );
 alter table BAJA add constraint fk_bajas_empleado foreign key (fk_id_empleado_baja) references EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
 alter table BAJA add constraint fk_tipo_bajas foreign key (fk_id_tipo_baja) references TIPO_BAJA (pk_id_tipo_baja) on delete restrict on update cascade;
@@ -277,26 +279,27 @@ create table if not exists TIPO_ENTREVISTA (
   nombre_tipo_entrevista 						varchar(45) null,
   primary key (pk_id_tipo_entrevista)
 );
-create table if not exists RECLUTAMIENTO (
-  pk_id_reclutamiento 							int not null,
-  fk_id_nivel_estudio_reclutamiento		 		int null,
-  nombre1_reclutamiento 						varchar(45) null,
-  nombre2_reclutamiento 						varchar(45) null,
-  apellido1_reclutamiento 						varchar(45) null,
-  apellido2_reclutamiento 						varchar(45) null,
-  fecha_nacimiento_reclutamiento 				varchar(10) null,
-  dpi_reclutamiento 							int null,
-  fk_id_genero_reclutamiento 					int null,
-  fk_id_estado_civil_reclutamiento 				int null,
-  email_reclutamiento 							varchar(125) null,
-  telefono_reclutamiento 						int null,
-  numero_igss_reclutamiento						int null,
-  fk_id_licencia_conducir_reclutamiento 		int null,
-  fk_id_puesto_reclutamiento 					int null,
-  estado_reclutado_entrevista 					int null,
-  nombre_profesion								varchar(125),
-  fk_id_departamento_empresarial_reclutamiento 	int null,
-  primary key (pk_id_reclutamiento)
+create table if not exists RECLUTAMIENTO ( 
+	pk_id_reclutamiento 						int not null, 
+	fk_id_nivel_estudio_reclutamiento 			int null, 
+	nombre1_reclutamiento 						varchar(45) null, 
+	nombre2_reclutamiento 						varchar(45) null, 
+	apellido1_reclutamiento						varchar(45) null, 
+	apellido2_reclutamiento 					varchar(45) null, 
+	fecha_nacimiento_reclutamiento 				varchar(10) null, 
+	dpi_reclutamiento 							int(15) null, 
+	fk_id_genero_reclutamiento 					int null, 
+	fk_id_estado_civil_reclutamiento 			int null, 
+	email_reclutamiento 						varchar(125) null, 
+	telefono_reclutamiento 						int null, 
+	numero_igss_reclutamiento 					int null, 
+	fk_id_licencia_conducir_reclutamiento 		int null, 
+	fk_id_puesto_reclutamiento 					int null, 
+	fk_id_horario_reclutamiento					int null, 
+	estado_reclutado_entrevista 				varchar(25) null, 
+	nombre_profesion 							varchar(125), 
+	fk_id_departamento_empresarial_reclutamiento int null, 
+	primary key (pk_id_reclutamiento)
 );
 alter table RECLUTAMIENTO add constraint fk_nivel_estudio_reclutamiento foreign key (fk_id_nivel_estudio_reclutamiento) references FORMACION_ACADEMICA (pk_id_formacion_academica) on delete restrict on update cascade;
 alter table RECLUTAMIENTO add constraint fk_genero_reclutamiento foreign key (fk_id_genero_reclutamiento) references GENERO (pk_id_genero) on delete restrict on update cascade;
@@ -304,6 +307,7 @@ alter table RECLUTAMIENTO add constraint fk_estado_civil_reclutamiento foreign k
 alter table RECLUTAMIENTO add constraint fk_licencia_conducir_reclutamiento foreign key (fk_id_licencia_conducir_reclutamiento) references LICENCIA_CONDUCCION (pk_id_licencia_conduccion) on delete restrict on update cascade;
 alter table RECLUTAMIENTO add constraint fk_puesto_reclutamiento foreign key (fk_id_puesto_reclutamiento) references PUESTO (pk_id_puesto) on delete restrict on update cascade;
 alter table RECLUTAMIENTO add constraint fk_departamento_empresarial_reclutamiento foreign key (fk_id_departamento_empresarial_reclutamiento) references DEPARTAMENTO_EMPRESARIAL (pk_id__departamento_empresarial) on delete restrict on update cascade;
+alter table RECLUTAMIENTO add constraint fk_horario_reclutamiento foreign key (fk_id_horario_reclutamiento) references HORARIO (pk_id_horario) on delete restrict on update cascade;
 
 create table if not exists DIRECCION(
 	pk_id_direccion 							int not null,
@@ -378,14 +382,14 @@ alter table DETALLE_NOMINA add constraint fk_emplado_detalle_nomina foreign key 
 alter table DETALLE_NOMINA add constraint fk_percepcion_detalle_nomina foreign key (fk_id_percepciones_detalle_nomina) references PERCEPCION (pk_id_percepcion) on delete restrict on update cascade;
 alter table DETALLE_NOMINA add constraint fk_deduccion_detalle_nomina foreign key (fk_id_deducciones_detalle_nomina) references DEDUCCION (pk_id_deduccion) on delete restrict on update cascade;
 
-create table if not exists ENTREVISTA (
-  pk_id_entrevista 								int not null,
-  fk_id_empleado_entrevista 					int null,
-  fk_id_reclutamiento_entrevista 				int null,
-  fk_id_tipo_entrevista 						int null,
-  resultado_entrevista 							int null,
-  comentarios_entrevistador_entrevista 			varchar(200) null,
-  primary key (pk_id_entrevista)
+create table if not exists ENTREVISTA ( 
+	pk_id_entrevista 						int not null, 
+	fk_id_empleado_entrevista		 		int null, 
+	fk_id_reclutamiento_entrevista 			int null, 
+	fk_id_tipo_entrevista 					int null, 
+	resultado_entrevista 					varchar(55) null, 
+	comentarios_entrevistador_entrevista 	varchar(200) null, 
+	primary key (pk_id_entrevista) 
 );
 alter table ENTREVISTA add constraint fk_empleado_entrevista foreign key (fk_id_empleado_entrevista) references EMPLEADO (pk_id_empleado) on delete restrict on update cascade;
 alter table ENTREVISTA add constraint fk_reclutamiento_entrevista foreign key (fk_id_reclutamiento_entrevista) references RECLUTAMIENTO (pk_id_reclutamiento) on delete restrict on update cascade;
@@ -806,9 +810,9 @@ create table MOVIMIENTO_INVENTARIO(
 	pk_id_movimiento_inventario int(10)not null,
     fecha_movimiento_inventario datetime not null,
     fk_id_tipo_movimiento int(10)not null,
-    fk_id_ruta int(10) not null,
-    fk_id_vehiculo int(10)not null,
-    documento_asociado_movimiento_inventario int(10)not null,
+    fk_id_ruta int(10) null,
+    fk_id_vehiculo int(10) null,
+    documento_asociado_movimiento_inventario int(10) null,
     descripcion_movimiento_inventario varchar(50) not null,
 	primary key(pk_id_movimiento_inventario),
     key(pk_id_movimiento_inventario)
