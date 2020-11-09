@@ -1,3 +1,4 @@
+#Nov 8 FRM
 create database if not exists db_clc;
 use db_clc;
 #CONSULTAS-INTELIGENTES----------------------------------------------------------------------------
@@ -476,13 +477,6 @@ alter table CUENTA_CONTABLE add primary key (pk_id_cuenta_contable), add key fk_
 alter table CUENTA_CONTABLE add constraint fk_cuenta_padre_cuenta_hijo foreign key (fk_cuenta_padre_cuenta_contable) references CUENTA_CONTABLE(pk_id_cuenta_contable)on delete no action on update no action;
 alter table CUENTA_CONTABLE add constraint fk_tipo_cuenta_contable foreign key (fk_id_tipo_cuenta_contable) references TIPO_CUENTA_CONTABLE(pk_id_tipo_cuenta_contable)on delete no action on update no action;
 
-create table if not exists TIPO_TRANSACCION (
-pk_id_tipo_transaccion 				int(11) not null,
-nombre_tipo_transaccion 			varchar(45) ,
-descripcion_tipo_transaccion 		varchar(75) ,
-estado_tipo_transaccion 			tinyint(4)
-) ;
-alter table TIPO_TRANSACCION add primary key (pk_id_tipo_transaccion);
 
 create table if not exists TRANSACCION (
 pk_id_transaccion 					int(11) not null,
@@ -493,10 +487,19 @@ fk_id_tipo_moneda 					int(11) not null,
 monto_transaccion 					double ,
 descripcion_transaccion 			varchar(75)
 ) ;
-alter table TRANSACCION add primary key (pk_id_transaccion), add key fk_transaccion_numero_cuenta (fk_id_numero_cuenta_bancaria), 
-add key fk_transaccion_tipo_transaccion (fk_id_tipo_transaccion), add key fk_transaccion_tipo_moneda (fk_id_tipo_moneda);
+alter table TRANSACCION add primary key (pk_id_transaccion), add key fk_transaccion_numero_cuenta (fk_id_numero_cuenta_bancaria), add key fk_transaccion_tipo_transaccion (fk_id_tipo_transaccion), add key fk_transaccion_tipo_moneda (fk_id_tipo_moneda);
 alter table TRANSACCION add constraint fk_encabezado_transaccion_numero_cuenta foreign key (fk_id_numero_cuenta_bancaria) references CUENTA_BANCARIA (pk_id_numero_cuenta_bancaria)on delete no action on update no action;
+
+create table if not exists TIPO_TRANSACCION (
+pk_id_tipo_transaccion 				int(11) not null,
+nombre_tipo_transaccion 			varchar(45) ,
+descripcion_tipo_transaccion 		varchar(75) ,
+estado_tipo_transaccion 			tinyint(4)
+) ;
+alter table TIPO_TRANSACCION add primary key (pk_id_tipo_transaccion);
+alter table TRANSACCION add constraint fk_transaccion_id_tipo_moneda foreign key (fk_id_tipo_moneda ) references TIPO_MONEDA (pk_id_tipo_moneda )on delete no action on update no action;
 alter table TRANSACCION add constraint fk_transaccion_tipo_transaccion foreign key (fk_id_tipo_transaccion) references TIPO_TRANSACCION (pk_id_tipo_transaccion)on delete no action on update no action;
+
 
 create table if not exists SALDO_HISTORICO (
 pk_id_cuenta_contable 				int(11) not null,
@@ -528,13 +531,14 @@ alter table POLIZA_DETALLE add primary key (pk_poliza_encabezado,pk_id_cuenta_co
 alter table POLIZA_DETALLE add constraint fk_poliza_detalle_poliza_encabezado foreign key (pk_poliza_encabezado) references POLIZA_ENCABEZADO (pk_poliza_encabezado)on delete no action on update no action;
 alter table POLIZA_DETALLE add constraint fk_poliza_detalle_cuenta foreign key (pk_id_cuenta_contable) references CUENTA_CONTABLE (pk_id_cuenta_contable)on delete no action on update no action;
 
-create table if not exists PETICION_POLIZA(
-pk_id_peticion_poliza 				int(11) not null,
-concepto_peticion_poliza 			varchar(30),
-fecha_peticion_poliza 				datetime,
-descripcion_peticion_poliza 		varchar(100),
-monto_peticion_poliza 				double,
-fk_pk_poliza_encabezado 			int(11)
+create table if not exists PETICION_POLIZA (
+pk_id_peticion_poliza int(11) not null,
+concepto_peticion_poliza varchar(30),
+fecha_peticion_poliza datetime,
+descripcion_peticion_poliza varchar(100),
+monto_peticion_poliza double,
+fk_pk_poliza_encabezado int(11),
+estado_peticion_poliza int(2)
 );
 alter table PETICION_POLIZA add primary key (pk_id_peticion_poliza);
 
