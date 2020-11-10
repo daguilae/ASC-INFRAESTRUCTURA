@@ -894,6 +894,7 @@ create table if not exists ORDEN_COMPRA(
   estado_orden_compra						tinyint(1) null
 );
 alter table ORDEN_COMPRA add constraint fk_ORDEN_COMPRA_PRODUCTO1 foreign key (fk_id_producto_orden_compra) references PRODUCTO (pk_id_producto) on delete no action on update no action;
+alter table ORDEN_COMPRA modify fecha_envio_orden_compra varchar(50);
 
 create table if not exists RECETAS_ENCABEZADO(
 	pk_id_receta_encabezado			 			int(10) not null primary key auto_increment,
